@@ -5,6 +5,8 @@ $tag = "v$version"
 $distRoot = 'dist'
 $dist = Join-Path $distRoot "deadgl-$version"
 $archive = Join-Path $distRoot "deadgl-$version-source.zip"
+$scene = 'examples\command_machine.dgl'
+$loops = 200
 
 if (Test-Path $distRoot) { Remove-Item $distRoot -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
@@ -13,19 +15,44 @@ make clean test
 make clean sanitize
 make
 
-.\build\deadgl.exe prove examples\command_machine.dgl -o "$dist\command_machine.ppm" -p "$dist\command_machine.proof"
-$env:DEADGL_BENCH_LOOPS = '200'
-sh scripts/bench.sh examples/command_machine.dgl
+.\build\deadgl.exe prove $scene -o "$dist\command_machine.ppm" -p "$dist\command_machine.proof"
+.\build\deadgl.exe run $scene -o build\bench_warmup.ppm | Out-Null
+
+$sw = [System.Diagnostics.Stopwatch]::StartNew()
+for ($i = 0; $i -lt $loops; $i++) {
+    .\build\deadgl.exe run $scene -o build\bench.ppm | Out-Null
+}
+$sw.Stop()
+$totalNs = [int64]($sw.Elapsed.TotalMilliseconds * 1000000.0)
+$avgNs = [int64]($totalNs / $loops)
+$avgMs = [double]$avgNs / 1000000.0
+$hashLine = .\build\deadgl.exe hash $scene
+$versionLine = .\build\deadgl.exe --version
+$bench = @(
+    'DEADGL BENCHMARK',
+    "version $versionLine",
+    "scene $scene",
+    "loops $loops",
+    "total_ns $totalNs",
+    "avg_ns $avgNs",
+    ('avg_ms {0:N3}' -f $avgMs),
+    "hash $hashLine",
+    "shell PowerShell",
+    "system $([System.Environment]::OSVersion.VersionString)"
+)
+$bench | Set-Content build\benchmark.txt
 
 Copy-Item .\build\deadgl.exe "$dist\deadgl-windows.exe"
 Copy-Item .\build\benchmark.txt "$dist\benchmark.txt"
 Copy-Item README.md, MANIFESTO.md, LICENSE, PROOF.md $dist
 Copy-Item docs\RELEASE_V1.1.0.md "$dist\RELEASE_NOTES.md"
 
-Compress-Archive -Path * -DestinationPath $archive -Force
+$sourceItems = @('include','src','tests','examples','docs','scripts','.github','README.md','MANIFESTO.md','Makefile','CMakeLists.txt','LICENSE','PROOF.md')
+Compress-Archive -Path $sourceItems -DestinationPath $archive -Force
 
 $shaFile = Join-Path $dist 'SHA256SUMS.txt'
-Get-ChildItem $dist -File | ForEach-Object {
+if (Test-Path $shaFile) { Remove-Item $shaFile -Force }
+Get-ChildItem $dist -File | Where-Object { $_.Name -ne 'SHA256SUMS.txt' } | ForEach-Object {
     $hash = Get-FileHash $_.FullName -Algorithm SHA256
     "$($hash.Hash.ToLower())  $($_.Name)" | Add-Content $shaFile
 }
