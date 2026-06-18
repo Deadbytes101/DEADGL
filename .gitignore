@@ -1,6 +1,7 @@
 build/
 build-cmake/
-*.ppm
-*.exe
-*.obj
 *.o
+*.a
+*.exe
+*.ppm
+.DS_Store
