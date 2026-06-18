@@ -1,0 +1,5 @@
+canvas 640 360
+clear #000000
+tri 80 60 560 72 300 320 #00aaff
+wiretri 80 60 560 72 300 320 #ffffff
+rect 20 20 600 320 #f0f0f0
