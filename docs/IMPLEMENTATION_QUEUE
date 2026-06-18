@@ -1,0 +1,6 @@
+DEADGL implementation queue
+
+1. Keep main stable at the last v1.1 release tooling state.
+2. Build v1.2 on branch v1.2-geometry-pipe.
+3. Land camera, face, and wireface parser support before merging.
+4. Run local validation before release.
