@@ -15,6 +15,17 @@ function Run-Command {
     }
 }
 
+function Remove-IfExists {
+    param([Parameter(Mandatory = $true)][string]$Path)
+    if (Test-Path $Path) {
+        try {
+            Remove-Item $Path -Force
+        } catch {
+            throw "cannot replace $Path; close any viewer/editor using it, then rerun release.ps1"
+        }
+    }
+}
+
 $version = '1.1.0'
 $tag = "v$version"
 $distRoot = 'dist'
@@ -23,8 +34,24 @@ $archive = Join-Path $distRoot "deadgl-$version-source.zip"
 $scene = 'examples\command_machine.dgl'
 $loops = 200
 
-if (Test-Path $distRoot) { Remove-Item $distRoot -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
+
+Remove-IfExists $archive
+$managedFiles = @(
+    'benchmark.txt',
+    'command_machine.ppm',
+    'command_machine.proof',
+    'deadgl-windows.exe',
+    'LICENSE',
+    'MANIFESTO.md',
+    'PROOF.md',
+    'README.md',
+    'RELEASE_NOTES.md',
+    'SHA256SUMS.txt'
+)
+foreach ($name in $managedFiles) {
+    Remove-IfExists (Join-Path $dist $name)
+}
 
 Run-Command 'make' @('clean', 'test')
 Run-Command 'make' @('clean', 'sanitize')
