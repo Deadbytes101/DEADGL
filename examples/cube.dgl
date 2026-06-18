@@ -1,8 +1,6 @@
 canvas 640 360
-clear #020304
-grid 16 #071018
-rect 24 24 592 312 #c8d0cc
-rect 40 40 560 280 #273030
+clear #050608
+grid 32 #111824
 camera 3 2.2 4.2 0 0 0 62
 face -1 -1 1 1 -1 1 1 1 1 #ff8822
 face -1 -1 1 1 1 1 -1 1 1 #ff8822
@@ -14,11 +12,5 @@ wireface -1 -1 1 1 -1 1 1 1 1 #f0f0d8
 wireface -1 -1 1 1 1 1 -1 1 1 #f0f0d8
 wireface -1 1 -1 -1 1 1 1 1 1 #f0f0d8
 wireface -1 1 -1 1 1 1 1 1 -1 #f0f0d8
-line 40 80 210 80 #2ad7ff
-line 430 80 600 80 #2ad7ff
-line 40 280 210 280 #2ad7ff
-line 430 280 600 280 #2ad7ff
-fillrect 72 72 96 32 #101820
-rect 72 72 96 32 #5c6a70
-fillrect 472 256 96 32 #101820
-rect 472 256 96 32 #5c6a70
+wireface -1 -1 -1 1 1 -1 1 -1 -1 #f0f0d8
+wireface -1 -1 -1 -1 1 -1 1 1 -1 #f0f0d8

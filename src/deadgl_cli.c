@@ -2,17 +2,167 @@
 
 #include <ctype.h>
 #include <errno.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define DGL_LINE_MAX 512
+#define DGL_LINE_MAX 1024
+#define DGL_TOKEN_MAX 32
+#define DGL_PI 3.14159265358979323846
+
+typedef struct DGL_CliVec3 {
+    float x;
+    float y;
+    float z;
+} DGL_CliVec3;
+
+typedef struct DGL_CliCamera {
+    DGL_CliVec3 eye;
+    DGL_CliVec3 target;
+    DGL_CliVec3 up;
+    float fov_degrees;
+    float near_z;
+} DGL_CliCamera;
 
 typedef struct SceneState {
     DGL_Surface surface;
     const char *path;
     int line_no;
+    DGL_CliCamera camera;
 } SceneState;
+
+static DGL_CliVec3 vec3(float x, float y, float z) {
+    DGL_CliVec3 v;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    return v;
+}
+
+static DGL_CliVec3 vec3_sub(DGL_CliVec3 a, DGL_CliVec3 b) {
+    return vec3(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+static double vec3_dot(DGL_CliVec3 a, DGL_CliVec3 b) {
+    return (double)a.x * (double)b.x + (double)a.y * (double)b.y + (double)a.z * (double)b.z;
+}
+
+static DGL_CliVec3 vec3_cross(DGL_CliVec3 a, DGL_CliVec3 b) {
+    return vec3(
+        (float)((double)a.y * (double)b.z - (double)a.z * (double)b.y),
+        (float)((double)a.z * (double)b.x - (double)a.x * (double)b.z),
+        (float)((double)a.x * (double)b.y - (double)a.y * (double)b.x));
+}
+
+static int vec3_normalize(DGL_CliVec3 *v) {
+    double len;
+    if (v == NULL) {
+        return 0;
+    }
+    len = sqrt(vec3_dot(*v, *v));
+    if (!isfinite(len) || len < 1.0e-9) {
+        return 0;
+    }
+    v->x = (float)((double)v->x / len);
+    v->y = (float)((double)v->y / len);
+    v->z = (float)((double)v->z / len);
+    return 1;
+}
+
+static DGL_CliCamera camera_default(void) {
+    DGL_CliCamera camera;
+    camera.eye = vec3(3.0f, 2.0f, 5.0f);
+    camera.target = vec3(0.0f, 0.0f, 0.0f);
+    camera.up = vec3(0.0f, 1.0f, 0.0f);
+    camera.fov_degrees = 70.0f;
+    camera.near_z = 0.05f;
+    return camera;
+}
+
+static int project_vertex(const DGL_Surface *s, const DGL_CliCamera *camera, DGL_CliVec3 p, uint32_t color, DGL_Vertex *out) {
+    DGL_CliVec3 forward;
+    DGL_CliVec3 right;
+    DGL_CliVec3 up;
+    DGL_CliVec3 rel;
+    double cx;
+    double cy;
+    double cz;
+    double near_z;
+    double fov;
+    double scale;
+    double sx;
+    double sy;
+
+    if (!dgl_surface_valid(s) || camera == NULL || out == NULL) {
+        return 0;
+    }
+
+    forward = vec3_sub(camera->target, camera->eye);
+    if (!vec3_normalize(&forward)) {
+        return 0;
+    }
+
+    up = camera->up;
+    if (!vec3_normalize(&up)) {
+        up = vec3(0.0f, 1.0f, 0.0f);
+    }
+
+    right = vec3_cross(forward, up);
+    if (!vec3_normalize(&right)) {
+        right = vec3(1.0f, 0.0f, 0.0f);
+    }
+
+    up = vec3_cross(right, forward);
+    if (!vec3_normalize(&up)) {
+        return 0;
+    }
+
+    rel = vec3_sub(p, camera->eye);
+    cx = vec3_dot(rel, right);
+    cy = vec3_dot(rel, up);
+    cz = vec3_dot(rel, forward);
+    near_z = camera->near_z > 0.0f ? (double)camera->near_z : 0.05;
+    if (!isfinite(cz) || cz <= near_z) {
+        return 0;
+    }
+
+    fov = camera->fov_degrees > 1.0f ? (double)camera->fov_degrees : 70.0;
+    if (fov > 170.0) {
+        fov = 170.0;
+    }
+
+    scale = ((double)s->height * 0.5) / tan((fov * DGL_PI / 180.0) * 0.5);
+    sx = (((double)s->width - 1.0) * 0.5) + (cx * scale / cz);
+    sy = (((double)s->height - 1.0) * 0.5) - (cy * scale / cz);
+    if (!isfinite(sx) || !isfinite(sy)) {
+        return 0;
+    }
+
+    out->x = (float)sx;
+    out->y = (float)sy;
+    out->z = (float)cz;
+    out->color = color;
+    return 1;
+}
+
+static void draw_face(DGL_Surface *s, const DGL_CliCamera *camera, DGL_CliVec3 a, DGL_CliVec3 b, DGL_CliVec3 c, uint32_t color) {
+    DGL_Vertex va;
+    DGL_Vertex vb;
+    DGL_Vertex vc;
+    if (project_vertex(s, camera, a, color, &va) && project_vertex(s, camera, b, color, &vb) && project_vertex(s, camera, c, color, &vc)) {
+        dgl_tri(s, va, vb, vc);
+    }
+}
+
+static void draw_wire_face(DGL_Surface *s, const DGL_CliCamera *camera, DGL_CliVec3 a, DGL_CliVec3 b, DGL_CliVec3 c, uint32_t color) {
+    DGL_Vertex va;
+    DGL_Vertex vb;
+    DGL_Vertex vc;
+    if (project_vertex(s, camera, a, color, &va) && project_vertex(s, camera, b, color, &vb) && project_vertex(s, camera, c, color, &vc)) {
+        dgl_wire_tri(s, va, vb, vc, color);
+    }
+}
 
 static char *skip_ws(char *p) {
     while (*p != '\0' && isspace((unsigned char)*p)) {
@@ -40,6 +190,18 @@ static int read_i(const char *text, int *out) {
         return DGL_ERR_RANGE;
     }
     *out = (int)v;
+    return DGL_OK;
+}
+
+static int read_f(const char *text, float *out) {
+    char *end;
+    float v;
+    errno = 0;
+    v = strtof(text, &end);
+    if (errno != 0 || end == text || *end != '\0' || !isfinite(v)) {
+        return DGL_ERR_PARSE;
+    }
+    *out = v;
     return DGL_OK;
 }
 
@@ -146,7 +308,7 @@ static int scene_f6_color(SceneState *st, char **tok, DGL_Vertex *a, DGL_Vertex 
     if (tok[1] == NULL || tok[2] == NULL || tok[3] == NULL || tok[4] == NULL || tok[5] == NULL || tok[6] == NULL || tok[7] == NULL || tok[8] != NULL) {
         return DGL_ERR_PARSE;
     }
-    if (sscanf(tok[1], "%f", &a->x) != 1 || sscanf(tok[2], "%f", &a->y) != 1 || sscanf(tok[3], "%f", &b->x) != 1 || sscanf(tok[4], "%f", &b->y) != 1 || sscanf(tok[5], "%f", &c->x) != 1 || sscanf(tok[6], "%f", &c->y) != 1) {
+    if (read_f(tok[1], &a->x) != DGL_OK || read_f(tok[2], &a->y) != DGL_OK || read_f(tok[3], &b->x) != DGL_OK || read_f(tok[4], &b->y) != DGL_OK || read_f(tok[5], &c->x) != DGL_OK || read_f(tok[6], &c->y) != DGL_OK) {
         return scene_error(st, "bad float");
     }
     if (dgl_parse_color(tok[7], color) != DGL_OK) {
@@ -161,6 +323,40 @@ static int scene_f6_color(SceneState *st, char **tok, DGL_Vertex *a, DGL_Vertex 
     return DGL_OK;
 }
 
+static int scene_camera(SceneState *st, char **tok) {
+    if (tok[1] == NULL || tok[2] == NULL || tok[3] == NULL || tok[4] == NULL || tok[5] == NULL || tok[6] == NULL || tok[7] == NULL || tok[8] != NULL) {
+        return scene_error(st, "camera wants: camera EX EY EZ TX TY TZ FOV");
+    }
+    if (read_f(tok[1], &st->camera.eye.x) != DGL_OK || read_f(tok[2], &st->camera.eye.y) != DGL_OK || read_f(tok[3], &st->camera.eye.z) != DGL_OK || read_f(tok[4], &st->camera.target.x) != DGL_OK || read_f(tok[5], &st->camera.target.y) != DGL_OK || read_f(tok[6], &st->camera.target.z) != DGL_OK || read_f(tok[7], &st->camera.fov_degrees) != DGL_OK) {
+        return scene_error(st, "bad camera float");
+    }
+    st->camera.up = vec3(0.0f, 1.0f, 0.0f);
+    st->camera.near_z = 0.05f;
+    return DGL_OK;
+}
+
+static int scene_face(SceneState *st, char **tok, int wire) {
+    DGL_CliVec3 a;
+    DGL_CliVec3 b;
+    DGL_CliVec3 c;
+    uint32_t color;
+    if (tok[1] == NULL || tok[2] == NULL || tok[3] == NULL || tok[4] == NULL || tok[5] == NULL || tok[6] == NULL || tok[7] == NULL || tok[8] == NULL || tok[9] == NULL || tok[10] == NULL || tok[11] != NULL) {
+        return scene_error(st, "face wants 9 numbers and a color");
+    }
+    if (read_f(tok[1], &a.x) != DGL_OK || read_f(tok[2], &a.y) != DGL_OK || read_f(tok[3], &a.z) != DGL_OK || read_f(tok[4], &b.x) != DGL_OK || read_f(tok[5], &b.y) != DGL_OK || read_f(tok[6], &b.z) != DGL_OK || read_f(tok[7], &c.x) != DGL_OK || read_f(tok[8], &c.y) != DGL_OK || read_f(tok[9], &c.z) != DGL_OK) {
+        return scene_error(st, "bad face float");
+    }
+    if (dgl_parse_color(tok[10], &color) != DGL_OK) {
+        return scene_error(st, "bad color");
+    }
+    if (wire) {
+        draw_wire_face(&st->surface, &st->camera, a, b, c, color);
+    } else {
+        draw_face(&st->surface, &st->camera, a, b, c, color);
+    }
+    return DGL_OK;
+}
+
 static int scene_ztri(SceneState *st, char **tok) {
     DGL_Vertex a;
     DGL_Vertex b;
@@ -169,7 +365,7 @@ static int scene_ztri(SceneState *st, char **tok) {
     if (tok[1] == NULL || tok[2] == NULL || tok[3] == NULL || tok[4] == NULL || tok[5] == NULL || tok[6] == NULL || tok[7] == NULL || tok[8] == NULL || tok[9] == NULL || tok[10] == NULL || tok[11] != NULL) {
         return scene_error(st, "ztri wants 9 numbers and a color");
     }
-    if (sscanf(tok[1], "%f", &a.x) != 1 || sscanf(tok[2], "%f", &a.y) != 1 || sscanf(tok[3], "%f", &a.z) != 1 || sscanf(tok[4], "%f", &b.x) != 1 || sscanf(tok[5], "%f", &b.y) != 1 || sscanf(tok[6], "%f", &b.z) != 1 || sscanf(tok[7], "%f", &c.x) != 1 || sscanf(tok[8], "%f", &c.y) != 1 || sscanf(tok[9], "%f", &c.z) != 1) {
+    if (read_f(tok[1], &a.x) != DGL_OK || read_f(tok[2], &a.y) != DGL_OK || read_f(tok[3], &a.z) != DGL_OK || read_f(tok[4], &b.x) != DGL_OK || read_f(tok[5], &b.y) != DGL_OK || read_f(tok[6], &b.z) != DGL_OK || read_f(tok[7], &c.x) != DGL_OK || read_f(tok[8], &c.y) != DGL_OK || read_f(tok[9], &c.z) != DGL_OK) {
         return scene_error(st, "bad ztri float");
     }
     if (dgl_parse_color(tok[10], &color) != DGL_OK) {
@@ -194,6 +390,9 @@ static int scene_command(SceneState *st, char **tok) {
 
     if (strcmp(tok[0], "canvas") == 0) {
         return scene_canvas(st, tok);
+    }
+    if (strcmp(tok[0], "camera") == 0) {
+        return scene_camera(st, tok);
     }
     if (strcmp(tok[0], "clear") == 0) {
         if (scene_color1(st, tok, &color) != DGL_OK) {
@@ -255,6 +454,12 @@ static int scene_command(SceneState *st, char **tok) {
     if (strcmp(tok[0], "ztri") == 0) {
         return scene_ztri(st, tok);
     }
+    if (strcmp(tok[0], "face") == 0) {
+        return scene_face(st, tok, 0);
+    }
+    if (strcmp(tok[0], "wireface") == 0) {
+        return scene_face(st, tok, 1);
+    }
     return scene_error(st, "unknown command");
 }
 
@@ -270,6 +475,7 @@ static int run_scene(const char *path, const char *out, const char *proof_path, 
     st.surface.depth = NULL;
     st.path = path;
     st.line_no = 0;
+    st.camera = camera_default();
 
     if (dgl_surface_init(&st.surface, 640, 360) != DGL_OK) {
         return 1;
@@ -284,7 +490,7 @@ static int run_scene(const char *path, const char *out, const char *proof_path, 
     }
 
     while (fgets(line, sizeof(line), f) != NULL) {
-        char *tok[16];
+        char *tok[DGL_TOKEN_MAX];
         char *p;
         int n = 0;
         st.line_no++;
@@ -296,7 +502,7 @@ static int run_scene(const char *path, const char *out, const char *proof_path, 
             break;
         }
         p = strtok(line, " \t\r\n");
-        while (p != NULL && n < 15) {
+        while (p != NULL && n < DGL_TOKEN_MAX - 1) {
             tok[n++] = p;
             p = strtok(NULL, " \t\r\n");
         }
@@ -325,6 +531,34 @@ static int run_scene(const char *path, const char *out, const char *proof_path, 
     }
     dgl_surface_free(&st.surface);
     return rc == DGL_OK ? 0 : 1;
+}
+
+static void demo_cube(DGL_Surface *s) {
+    DGL_CliCamera camera = camera_default();
+    DGL_CliVec3 n0 = vec3(-1.0f, -1.0f, -1.0f);
+    DGL_CliVec3 n1 = vec3(1.0f, -1.0f, -1.0f);
+    DGL_CliVec3 n2 = vec3(1.0f, 1.0f, -1.0f);
+    DGL_CliVec3 n3 = vec3(-1.0f, 1.0f, -1.0f);
+    DGL_CliVec3 f0 = vec3(-1.0f, -1.0f, 1.0f);
+    DGL_CliVec3 f1 = vec3(1.0f, -1.0f, 1.0f);
+    DGL_CliVec3 f2 = vec3(1.0f, 1.0f, 1.0f);
+    DGL_CliVec3 f3 = vec3(-1.0f, 1.0f, 1.0f);
+    camera.eye = vec3(3.0f, 2.2f, 4.2f);
+    camera.target = vec3(0.0f, 0.0f, 0.0f);
+    camera.fov_degrees = 62.0f;
+
+    draw_face(s, &camera, f0, f1, f2, DGL_RGB(255, 136, 34));
+    draw_face(s, &camera, f0, f2, f3, DGL_RGB(255, 136, 34));
+    draw_face(s, &camera, n0, n2, n1, DGL_RGB(42, 150, 255));
+    draw_face(s, &camera, n0, n3, n2, DGL_RGB(42, 150, 255));
+    draw_face(s, &camera, n3, f3, f2, DGL_RGB(0, 255, 153));
+    draw_face(s, &camera, n3, f2, n2, DGL_RGB(0, 255, 153));
+    draw_wire_face(s, &camera, f0, f1, f2, DGL_RGB(240, 240, 216));
+    draw_wire_face(s, &camera, f0, f2, f3, DGL_RGB(240, 240, 216));
+    draw_wire_face(s, &camera, n0, n2, n1, DGL_RGB(240, 240, 216));
+    draw_wire_face(s, &camera, n0, n3, n2, DGL_RGB(240, 240, 216));
+    draw_wire_face(s, &camera, n3, f3, f2, DGL_RGB(240, 240, 216));
+    draw_wire_face(s, &camera, n3, f2, n2, DGL_RGB(240, 240, 216));
 }
 
 static int demo(const char *name, const char *out) {
@@ -361,6 +595,8 @@ static int demo(const char *name, const char *out) {
         dgl_fill_circle(&s, 320, 180, 22, DGL_RGB(0, 255, 153));
         dgl_circle(&s, 320, 180, 46, DGL_RGB(232, 232, 216));
         dgl_rect(&s, 40, 32, 560, 296, DGL_RGB(232, 232, 216));
+    } else if (strcmp(name, "cube") == 0) {
+        demo_cube(&s);
     } else {
         fprintf(stderr, "deadgl: unknown demo %s\n", name);
         dgl_surface_free(&s);
@@ -383,6 +619,7 @@ static void usage(void) {
     puts("  deadgl --version");
     puts("  deadgl demo shrine -o out.ppm");
     puts("  deadgl demo depth -o out.ppm");
+    puts("  deadgl demo cube -o out.ppm");
     puts("  deadgl run scene.dgl -o out.ppm");
     puts("  deadgl prove scene.dgl -o out.ppm -p out.proof");
     puts("  deadgl hash scene.dgl");
