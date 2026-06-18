@@ -1,10 +1,22 @@
 $ErrorActionPreference = 'Stop'
 
 function Run-Native {
-    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
-    & $Args[0] @($Args[1..($Args.Length - 1)])
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [string]$File,
+
+        [Parameter(ValueFromRemainingArguments = $true)]
+        [string[]]$NativeArgs
+    )
+
+    if ($null -eq $NativeArgs) {
+        $NativeArgs = @()
+    }
+
+    & $File @NativeArgs
     if ($LASTEXITCODE -ne 0) {
-        throw "command failed: $($Args -join ' ')"
+        $all = @($File) + $NativeArgs
+        throw "command failed: $($all -join ' ')"
     }
 }
 
