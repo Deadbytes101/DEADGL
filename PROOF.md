@@ -1,28 +1,34 @@
 # Proof
 
-Generated for v1.0.0 before pushing.
+v1.1.0 proof-machine cut.
 
-```text
+Validation commands:
+
+```sh
 make clean test
-PASS deadgl core
-DEADGL 1.0.0
-hash 5c080b02c2ed03cb
-hash 1341cd43556e0a08
-b452b48c23800b9d  examples/shrine.dgl
-```
-
-```text
 make clean sanitize
-PASS deadgl core
-DEADGL 1.0.0
-hash 5c080b02c2ed03cb
-hash 1341cd43556e0a08
-b452b48c23800b9d  examples/shrine.dgl
-```
-
-```text
 cmake -S . -B build-cmake
 cmake --build build-cmake
 ctest --test-dir build-cmake --output-on-failure
-100% tests passed, 0 tests failed out of 3
+```
+
+The Makefile path renders demos, renders a scene, writes a proof file, hashes the scene, and checks that outputs exist.
+
+Expected version:
+
+```text
+DEADGL 1.1.0
+```
+
+Proof file shape:
+
+```text
+DEADGL_PROOF
+version 1.1.0
+scene examples/shrine.dgl
+output build/proof.ppm
+width 640
+height 360
+pixels 230400
+hash <framebuffer-hash>
 ```
