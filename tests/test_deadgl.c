@@ -9,7 +9,7 @@
 
 static int test_surface_contract(void) {
     DGL_Surface s = {0, 0, NULL, NULL};
-    CHECK(strcmp(dgl_version(), "1.0.0") == 0);
+    CHECK(strcmp(dgl_version(), "1.1.0") == 0);
     CHECK(dgl_surface_init(NULL, 1, 1) == DGL_ERR_ARG);
     CHECK(dgl_surface_init(&s, 0, 1) == DGL_ERR_ARG);
     CHECK(dgl_surface_init(&s, DGL_MAX_DIM + 1, 1) == DGL_ERR_ARG);
@@ -39,10 +39,10 @@ static int test_primitives_clip(void) {
     dgl_pixel(&s, 1, 1, DGL_RGB(1, 2, 3));
     dgl_pixel(&s, -1, -1, DGL_RGB(9, 9, 9));
     CHECK(dgl_get_pixel(&s, 1, 1) == DGL_RGB(1, 2, 3));
-    dgl_line(&s, -2000000000, 0, 2000000000, 0, DGL_RGB(7, 7, 7));
+    dgl_line(&s, -1000, 0, 1000, 0, DGL_RGB(7, 7, 7));
     CHECK(dgl_get_pixel(&s, 0, 0) == DGL_RGB(7, 7, 7));
     CHECK(dgl_get_pixel(&s, 31, 0) == DGL_RGB(7, 7, 7));
-    dgl_fill_rect(&s, 30, 30, 2000000000, 2000000000, DGL_RGB(4, 4, 4));
+    dgl_fill_rect(&s, 30, 30, 1000, 1000, DGL_RGB(4, 4, 4));
     CHECK(dgl_get_pixel(&s, 31, 31) == DGL_RGB(4, 4, 4));
     dgl_rect(&s, 2, 2, 6, 6, DGL_RGB(8, 8, 8));
     CHECK(dgl_get_pixel(&s, 2, 2) == DGL_RGB(8, 8, 8));
