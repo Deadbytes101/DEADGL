@@ -53,15 +53,15 @@ powershell -ExecutionPolicy Bypass -File scripts\release.ps1
 - local benchmark report
 - local release scripts
 - unit tests
-- sanitizer target
-- Makefile, CMake, optional CI
+- sanitizer probe
+- Makefile and CMake
 
 ## What it refuses
 
 - no OBJ-first path
 - no lesson ladder
 - no hidden engine layer
-- no GPU cosplay
+- no fake GPU layer
 - no magic scene graph
 
 ## Proof file
@@ -79,7 +79,7 @@ hash 0123456789abcdef
 
 ## Manual release
 
-GitHub Actions may be disabled at the account level. DEADGL does not depend on it.
+Local release is the primary path.
 
 ```sh
 scripts/release.sh
@@ -97,7 +97,7 @@ Artifacts land in:
 dist/deadgl-1.1.0/
 ```
 
-Upload those files to GitHub Releases manually, or publish with GitHub CLI:
+Publish with GitHub CLI:
 
 ```sh
 gh release create v1.1.0 dist/deadgl-1.1.0/* dist/deadgl-1.1.0-source.zip --title "DEADGL v1.1.0" --notes-file docs/RELEASE_V1.1.0.md
