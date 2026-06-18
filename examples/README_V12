@@ -1,0 +1,5 @@
+v1.2 branch examples
+
+cube.dgl is a raw depth-buffer cube built from current ztri and line commands.
+
+Final v1.2 should replace this with a projected cube after parser support lands.
