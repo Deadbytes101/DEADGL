@@ -6,11 +6,18 @@ Input is `.dgl`. Output is pixels. Proof is a hash.
 
 ## Ships
 
-- `deadgl` Linux binary from GitHub Actions
-- source tarball
+- `deadgl-windows.exe` built by the local release script
+- `deadgl-1.1.0-source.zip`
 - command machine PPM output
 - command machine proof file
-- benchmark report from Actions
+- benchmark report
+- SHA256 sums
+
+## Local validation
+
+- `make clean test` passed
+- sanitizer path probed the toolchain; w64devkit may skip ASan/UBSan when runtimes are unavailable
+- local release script produced binary, proof, benchmark, source zip, and checksums
 
 ## Core
 
