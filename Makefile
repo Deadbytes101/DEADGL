@@ -38,11 +38,13 @@ test: $(BUILD)/deadgl $(BUILD)/test_deadgl
 	$(BUILD)/deadgl --version
 	$(BUILD)/deadgl demo shrine -o $(BUILD)/shrine.ppm
 	$(BUILD)/deadgl demo depth -o $(BUILD)/depth.ppm
+	$(BUILD)/deadgl demo cube -o $(BUILD)/cube.ppm
 	$(BUILD)/deadgl run examples/shrine.dgl -o $(BUILD)/scene.ppm
 	$(BUILD)/deadgl prove examples/shrine.dgl -o $(BUILD)/proof.ppm -p $(BUILD)/proof.txt
 	$(BUILD)/deadgl hash examples/shrine.dgl
 	test -s $(BUILD)/shrine.ppm
 	test -s $(BUILD)/depth.ppm
+	test -s $(BUILD)/cube.ppm
 	test -s $(BUILD)/scene.ppm
 	test -s $(BUILD)/proof.ppm
 	test -s $(BUILD)/proof.txt
@@ -61,6 +63,7 @@ sanitize:
 demo: $(BUILD)/deadgl
 	$(BUILD)/deadgl demo shrine -o $(BUILD)/shrine.ppm
 	$(BUILD)/deadgl demo depth -o $(BUILD)/depth.ppm
+	$(BUILD)/deadgl demo cube -o $(BUILD)/cube.ppm
 
 debug:
 	sh scripts/debug_probe.sh
