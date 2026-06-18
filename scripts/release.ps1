@@ -1,5 +1,13 @@
 $ErrorActionPreference = 'Stop'
 
+function Run-Native {
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
+    & $Args[0] @($Args[1..($Args.Length - 1)])
+    if ($LASTEXITCODE -ne 0) {
+        throw "command failed: $($Args -join ' ')"
+    }
+}
+
 $version = '1.1.0'
 $tag = "v$version"
 $distRoot = 'dist'
@@ -11,16 +19,21 @@ $loops = 200
 if (Test-Path $distRoot) { Remove-Item $distRoot -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
 
-make clean test
-make clean sanitize
-make
+Run-Native make clean test
+Run-Native make clean sanitize
+Run-Native make clean
+Run-Native make
 
-.\build\deadgl.exe prove $scene -o "$dist\command_machine.ppm" -p "$dist\command_machine.proof"
-.\build\deadgl.exe run $scene -o build\bench_warmup.ppm | Out-Null
+if (!(Test-Path .\build\deadgl.exe)) {
+    throw 'missing build\deadgl.exe after normal build'
+}
+
+Run-Native .\build\deadgl.exe prove $scene -o "$dist\command_machine.ppm" -p "$dist\command_machine.proof"
+Run-Native .\build\deadgl.exe run $scene -o build\bench_warmup.ppm
 
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
 for ($i = 0; $i -lt $loops; $i++) {
-    .\build\deadgl.exe run $scene -o build\bench.ppm | Out-Null
+    Run-Native .\build\deadgl.exe run $scene -o build\bench.ppm
 }
 $sw.Stop()
 $totalNs = [int64]($sw.Elapsed.TotalMilliseconds * 1000000.0)
