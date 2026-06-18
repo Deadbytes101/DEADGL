@@ -1,0 +1,10 @@
+canvas 640 360
+clear #050608
+grid 32 #171923
+tri 320 36 96 304 544 304 #ffcc55
+wiretri 320 36 96 304 544 304 #f0f0d8
+fillcircle 320 180 22 #00ff99
+circle 320 180 46 #e8e8d8
+rect 40 32 560 296 #e8e8d8
+line 0 180 639 180 #00ff99
+line 320 0 320 359 #00ff99
