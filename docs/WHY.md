@@ -1,7 +1,7 @@
 # Why
 
-OpenGL and Vulkan are good tools. They are large because real hardware is large.
+A GPU API is not wrong. It is just large.
 
-DEADGL is smaller on purpose. It draws to a framebuffer, hashes the result, and writes PPM. A line is integer steps. A triangle is edge tests. A file is bytes.
+DEADGL is the other direction. Allocate a surface. Draw pixels. Save bytes. Hash the result. No driver state. No magic queue. No invisible machine behind the curtain.
 
-This is not nostalgia. It is control.
+This code is small because the point is to see it.
