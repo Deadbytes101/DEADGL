@@ -10,4 +10,4 @@ Run these after `make`.
 ./build/deadgl prove examples/command_machine.dgl -o command_machine.ppm -p command_machine.proof
 ```
 
-`command_machine.dgl` is the identity example. It is command stream art: lines, circles, triangles, depth, proof.
+`command_machine.dgl` is the identity example: a framebuffer-machine schematic built from raw commands.
