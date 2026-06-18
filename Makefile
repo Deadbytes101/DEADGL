@@ -5,6 +5,8 @@ CPPFLAGS ?= -Iinclude
 LDFLAGS ?=
 LDLIBS ?= -lm
 BUILD := build
+SAN_CFLAGS := -std=c99 -O1 -g -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wstrict-prototypes -Werror -fsanitize=address,undefined -fno-omit-frame-pointer
+SAN_LDFLAGS := -fsanitize=address,undefined
 
 .PHONY: all clean test sanitize demo debug bench release-local
 
@@ -47,7 +49,14 @@ test: $(BUILD)/deadgl $(BUILD)/test_deadgl
 
 sanitize:
 	$(MAKE) clean
-	$(MAKE) test CFLAGS="-std=c99 -O1 -g -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wstrict-prototypes -Werror -fsanitize=address,undefined -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address,undefined"
+	mkdir -p $(BUILD)
+	printf 'int main(void){return 0;}\n' > $(BUILD)/san_check.c
+	@if $(CC) $(SAN_CFLAGS) $(BUILD)/san_check.c $(SAN_LDFLAGS) -o $(BUILD)/san_check >/dev/null 2>&1; then \
+		$(MAKE) test CFLAGS="$(SAN_CFLAGS)" LDFLAGS="$(SAN_LDFLAGS)"; \
+	else \
+		echo "SKIP sanitize: sanitizer runtime unavailable for CC=$(CC)"; \
+	fi
+	$(MAKE) clean
 
 demo: $(BUILD)/deadgl
 	$(BUILD)/deadgl demo shrine -o $(BUILD)/shrine.ppm
