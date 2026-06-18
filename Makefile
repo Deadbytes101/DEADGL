@@ -1,6 +1,6 @@
 CC ?= cc
 AR ?= ar
-CFLAGS ?= -std=c99 -O2 -Wall -Wextra -Wpedantic -Wshadow -Wstrict-prototypes -Werror
+CFLAGS ?= -std=c99 -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wstrict-prototypes -Werror
 CPPFLAGS ?= -Iinclude
 LDFLAGS ?=
 LDLIBS ?= -lm
@@ -44,11 +44,11 @@ test: $(BUILD)/deadgl $(BUILD)/test_deadgl
 
 sanitize:
 	$(MAKE) clean
-	$(MAKE) test CFLAGS="-std=c99 -O1 -g -Wall -Wextra -Wpedantic -Wshadow -Wstrict-prototypes -Werror -fsanitize=address,undefined -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address,undefined"
+	$(MAKE) test CFLAGS="-std=c99 -O1 -g -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wstrict-prototypes -Werror -fsanitize=address,undefined -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address,undefined"
 
 demo: $(BUILD)/deadgl
 	$(BUILD)/deadgl demo shrine -o $(BUILD)/shrine.ppm
 	$(BUILD)/deadgl demo depth -o $(BUILD)/depth.ppm
 
 clean:
-	rm -rf $(BUILD) build-cmake
+	rm -rf $(BUILD) build-cmake deadgl_test.ppm
