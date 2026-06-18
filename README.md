@@ -2,7 +2,7 @@
 
 Tiny CPU renderer. No OpenGL. No Vulkan. No driver ceremony.
 
-DEADGL draws into memory and writes pixels back out. It is a small C99 renderer, a command-line tool, and a plain text scene runner. The point is not to replace industrial graphics APIs. The point is to keep the whole pipe visible.
+DEADGL draws into memory and writes pixels back out. The pipe is small enough to read. The image is a byte array. The proof is a hash.
 
 ```sh
 make test
@@ -11,23 +11,29 @@ make test
 ./build/deadgl hash examples/shrine.dgl
 ```
 
-## What is in v0.3.0
+## v1.0.0 iron cut
 
+- C99, no dependency
 - 32-bit ARGB framebuffer
 - depth buffer
-- pixel, line, rect, filled rect
-- circle and filled circle
-- wire triangle and filled triangle
+- clipped lines
+- clipped rectangles
+- circles
+- filled circles
+- wire triangles
+- filled depth-tested triangles
+- color interpolation across triangles
 - deterministic framebuffer hash
-- PPM image output
-- tiny `.dgl` scene format
-- strict C build
-- unit tests and sanitizer target
-- Makefile, CMake, GitHub Actions
+- PPM output
+- strict scene parser
+- strict compiler flags
+- unit tests
+- sanitizer build
+- Makefile, CMake, CI
 
-## What it is not
+## Not a costume
 
-Not a game engine. Not a GL wrapper. Not a Vulkan costume. Not a shader toy.
+Not a game engine. Not a GL wrapper. Not a Vulkan shrine. Not a shader playground.
 
 OpenGL and Vulkan talk to GPUs. DEADGL talks to memory.
 
@@ -39,7 +45,7 @@ make test
 make sanitize
 ```
 
-CMake path:
+CMake:
 
 ```sh
 cmake -S . -B build-cmake
@@ -57,9 +63,9 @@ ctest --test-dir build-cmake --output-on-failure
 ./build/deadgl hash examples/shrine.dgl
 ```
 
-PPM is used because it is simple: header, width, height, raw RGB bytes.
+PPM is used because it is honest: header, width, height, raw RGB bytes.
 
-## Scene file
+## Scene
 
 ```text
 canvas 640 360
@@ -75,4 +81,4 @@ line 0 180 639 180 #00ff99
 
 ## Rule
 
-If the feature makes the pipe harder to see, it waits.
+Keep the pipe visible. If a feature hides the pipe, it waits.
