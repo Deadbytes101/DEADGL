@@ -6,7 +6,7 @@ LDFLAGS ?=
 LDLIBS ?= -lm
 BUILD := build
 
-.PHONY: all clean test sanitize demo
+.PHONY: all clean test sanitize demo debug bench release-local
 
 all: $(BUILD)/deadgl $(BUILD)/libdeadgl.a
 
@@ -52,6 +52,15 @@ sanitize:
 demo: $(BUILD)/deadgl
 	$(BUILD)/deadgl demo shrine -o $(BUILD)/shrine.ppm
 	$(BUILD)/deadgl demo depth -o $(BUILD)/depth.ppm
+
+debug:
+	sh scripts/debug_probe.sh
+
+bench:
+	sh scripts/bench.sh examples/command_machine.dgl
+
+release-local:
+	sh scripts/release.sh
 
 clean:
 	rm -rf $(BUILD) build-cmake deadgl_test.ppm
