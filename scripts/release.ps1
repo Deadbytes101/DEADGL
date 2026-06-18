@@ -1,17 +1,12 @@
 $ErrorActionPreference = 'Stop'
 
-function Run-Native {
+function Run-Command {
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [string]$File,
 
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$NativeArgs
+        [string[]]$NativeArgs = @()
     )
-
-    if ($null -eq $NativeArgs) {
-        $NativeArgs = @()
-    }
 
     & $File @NativeArgs
     if ($LASTEXITCODE -ne 0) {
@@ -31,21 +26,21 @@ $loops = 200
 if (Test-Path $distRoot) { Remove-Item $distRoot -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
 
-Run-Native make clean test
-Run-Native make clean sanitize
-Run-Native make clean
-Run-Native make
+Run-Command 'make' @('clean', 'test')
+Run-Command 'make' @('clean', 'sanitize')
+Run-Command 'make' @('clean')
+Run-Command 'make' @()
 
 if (!(Test-Path .\build\deadgl.exe)) {
     throw 'missing build\deadgl.exe after normal build'
 }
 
-Run-Native .\build\deadgl.exe prove $scene -o "$dist\command_machine.ppm" -p "$dist\command_machine.proof"
-Run-Native .\build\deadgl.exe run $scene -o build\bench_warmup.ppm
+Run-Command '.\build\deadgl.exe' @('prove', $scene, '-o', "$dist\command_machine.ppm", '-p', "$dist\command_machine.proof")
+Run-Command '.\build\deadgl.exe' @('run', $scene, '-o', 'build\bench_warmup.ppm')
 
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
 for ($i = 0; $i -lt $loops; $i++) {
-    Run-Native .\build\deadgl.exe run $scene -o build\bench.ppm
+    Run-Command '.\build\deadgl.exe' @('run', $scene, '-o', 'build\bench.ppm')
 }
 $sw.Stop()
 $totalNs = [int64]($sw.Elapsed.TotalMilliseconds * 1000000.0)
