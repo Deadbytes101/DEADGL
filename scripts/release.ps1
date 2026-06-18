@@ -67,7 +67,8 @@ Copy-Item .\build\benchmark.txt "$dist\benchmark.txt"
 Copy-Item README.md, MANIFESTO.md, LICENSE, PROOF.md $dist
 Copy-Item docs\RELEASE_V1.1.0.md "$dist\RELEASE_NOTES.md"
 
-$sourceItems = @('include','src','tests','examples','docs','scripts','.github','README.md','MANIFESTO.md','Makefile','CMakeLists.txt','LICENSE','PROOF.md')
+$sourceItems = @('include','src','tests','examples','docs','scripts','README.md','MANIFESTO.md','Makefile','CMakeLists.txt','LICENSE','PROOF.md')
+$sourceItems = $sourceItems | Where-Object { Test-Path $_ }
 Compress-Archive -Path $sourceItems -DestinationPath $archive -Force
 
 $shaFile = Join-Path $dist 'SHA256SUMS.txt'
