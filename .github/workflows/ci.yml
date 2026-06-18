@@ -1,0 +1,21 @@
+name: ci
+on:
+  push:
+  pull_request:
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cc: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+      - run: make clean test CC=${{ matrix.cc }}
+      - run: make clean sanitize CC=${{ matrix.cc }}
+  cmake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build-cmake
+      - run: cmake --build build-cmake
+      - run: ctest --test-dir build-cmake --output-on-failure
