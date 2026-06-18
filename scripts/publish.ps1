@@ -32,9 +32,14 @@ Run-Checked 'gh' @('auth', 'status')
 Run-Checked 'gh' @('repo', 'edit', $repo, '--description', $description, '--add-topic', $topics)
 
 $exists = $false
-& gh release view $tag --repo $repo *> $null
-if ($LASTEXITCODE -eq 0) {
-    $exists = $true
+try {
+    & gh release view $tag --repo $repo *> $null
+    if ($LASTEXITCODE -eq 0) {
+        $exists = $true
+    }
+} catch {
+    $exists = $false
+    $global:LASTEXITCODE = 0
 }
 
 if ($exists) {
