@@ -1,0 +1,28 @@
+name: release
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  release-v1-1-0:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make clean test CC=gcc
+      - run: make clean sanitize CC=gcc
+      - run: mkdir -p dist
+      - run: ./build/deadgl prove examples/command_machine.dgl -o dist/command_machine.ppm -p dist/command_machine.proof
+      - run: DEADGL_BENCH_LOOPS=200 scripts/bench.sh examples/command_machine.dgl
+      - run: cp build/benchmark.txt dist/benchmark.txt
+      - run: cp build/deadgl dist/deadgl-linux-x86_64
+      - run: tar --exclude=.git --exclude=build --exclude=build-cmake -czf dist/deadgl-v1.1.0-source.tar.gz .
+      - run: |
+          if gh release view v1.1.0 >/dev/null 2>&1; then
+            echo "release v1.1.0 already exists"
+          else
+            gh release create v1.1.0 dist/* --target "$GITHUB_SHA" --title "DEADGL v1.1.0" --notes-file docs/RELEASE_V1.1.0.md
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
