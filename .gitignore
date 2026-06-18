@@ -1,7 +1,10 @@
 build/
 build-cmake/
+dist/
 *.o
 *.a
 *.exe
 *.ppm
+*.proof
+*.txt.tmp
 .DS_Store
