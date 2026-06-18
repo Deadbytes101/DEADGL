@@ -48,6 +48,29 @@ static int scene_error(const SceneState *st, const char *msg) {
     return DGL_ERR_PARSE;
 }
 
+static int write_proof_file(const char *proof_path, const char *scene_path, const char *out_path, const DGL_Surface *s) {
+    FILE *f;
+    if (proof_path == NULL) {
+        return DGL_OK;
+    }
+    f = fopen(proof_path, "wb");
+    if (f == NULL) {
+        return DGL_ERR_IO;
+    }
+    fprintf(f, "DEADGL_PROOF\n");
+    fprintf(f, "version %s\n", dgl_version());
+    fprintf(f, "scene %s\n", scene_path);
+    fprintf(f, "output %s\n", out_path == NULL ? "none" : out_path);
+    fprintf(f, "width %d\n", s->width);
+    fprintf(f, "height %d\n", s->height);
+    fprintf(f, "pixels %llu\n", (unsigned long long)dgl_surface_pixel_count(s));
+    fprintf(f, "hash %016llx\n", (unsigned long long)dgl_hash(s));
+    if (fclose(f) != 0) {
+        return DGL_ERR_IO;
+    }
+    return DGL_OK;
+}
+
 static int draw_grid(DGL_Surface *s, int step, uint32_t color) {
     int x;
     int y;
@@ -235,7 +258,7 @@ static int scene_command(SceneState *st, char **tok) {
     return scene_error(st, "unknown command");
 }
 
-static int run_scene(const char *path, const char *out, int hash_only) {
+static int run_scene(const char *path, const char *out, const char *proof_path, int hash_only) {
     FILE *f;
     SceneState st;
     char line[DGL_LINE_MAX];
@@ -294,6 +317,9 @@ static int run_scene(const char *path, const char *out, int hash_only) {
             printf("%016llx  %s\n", (unsigned long long)dgl_hash(&st.surface), path);
         } else if (dgl_save_ppm(&st.surface, out) != DGL_OK) {
             fprintf(stderr, "deadgl: cannot write %s\n", out);
+            rc = DGL_ERR_IO;
+        } else if (write_proof_file(proof_path, path, out, &st.surface) != DGL_OK) {
+            fprintf(stderr, "deadgl: cannot write proof %s\n", proof_path);
             rc = DGL_ERR_IO;
         }
     }
@@ -358,6 +384,7 @@ static void usage(void) {
     puts("  deadgl demo shrine -o out.ppm");
     puts("  deadgl demo depth -o out.ppm");
     puts("  deadgl run scene.dgl -o out.ppm");
+    puts("  deadgl prove scene.dgl -o out.ppm -p out.proof");
     puts("  deadgl hash scene.dgl");
 }
 
@@ -370,10 +397,13 @@ int main(int argc, char **argv) {
         return demo(argv[2], argv[4]);
     }
     if (argc == 5 && strcmp(argv[1], "run") == 0 && strcmp(argv[3], "-o") == 0) {
-        return run_scene(argv[2], argv[4], 0);
+        return run_scene(argv[2], argv[4], NULL, 0);
+    }
+    if (argc == 7 && strcmp(argv[1], "prove") == 0 && strcmp(argv[3], "-o") == 0 && strcmp(argv[5], "-p") == 0) {
+        return run_scene(argv[2], argv[4], argv[6], 0);
     }
     if (argc == 3 && strcmp(argv[1], "hash") == 0) {
-        return run_scene(argv[2], "", 1);
+        return run_scene(argv[2], "", NULL, 1);
     }
     usage();
     return argc == 1 ? 0 : 1;
