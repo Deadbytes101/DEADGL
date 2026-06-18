@@ -1,6 +1,6 @@
 # Scene format
 
-A `.dgl` file is a command stream.
+A `.dgl` file is a command stream. One command per line.
 
 ```text
 canvas W H
@@ -16,4 +16,12 @@ wiretri X0 Y0 X1 Y1 X2 Y2 COLOR
 ztri X0 Y0 Z0 X1 Y1 Z1 X2 Y2 Z2 COLOR
 ```
 
-Colors accept `#RRGGBB`, `0xRRGGBB`, or `0xAARRGGBB`.
+Colors:
+
+```text
+#RRGGBB
+0xRRGGBB
+0xAARRGGBB
+```
+
+Unknown commands are errors. Silent failure is poison.
