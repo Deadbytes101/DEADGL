@@ -1,0 +1,6 @@
+build/
+build-cmake/
+*.ppm
+*.exe
+*.obj
+*.o
