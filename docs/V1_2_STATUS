@@ -1,0 +1,5 @@
+branch: v1.2-geometry-pipe
+state: guarded
+main: stable v1.1
+
+The branch contains v1.2 planning docs and a raw depth cube scene. The C parser support still needs to land before release.
