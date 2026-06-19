@@ -9,7 +9,7 @@ int main(void) {
     uint32_t c = 0;
     uint64_t before;
     uint64_t after;
-    CHECK(strcmp(dgl_version(), "9.0.0") == 0);
+    CHECK(strcmp(dgl_version(), "10.0.0") == 0);
     CHECK(dgl_surface_init(&s, 64, 48) == DGL_OK);
     CHECK(dgl_surface_valid(&s));
     CHECK(dgl_surface_pixel_count(&s) == 64u * 48u);
