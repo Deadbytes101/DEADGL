@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-version="2.0.0"
+version=$(sed -n 's/^#define DGL_VERSION "\([^"]*\)".*/\1/p' include/deadgl.h | head -n 1)
 tag="v$version"
 dist="dist/deadgl-$version"
 archive="dist/deadgl-$version-source.tar.gz"
@@ -38,4 +38,4 @@ printf '\nDEADGL local release cut complete.\n'
 printf 'dist folder : %s\n' "$dist"
 printf 'source tar  : %s\n' "$archive"
 printf '\nOptional publish with GitHub CLI:\n'
-printf 'gh release create %s %s/* %s --title "DEADGL %s" --notes-file docs/RELEASE_V2.0.0.md\n' "$tag" "$dist" "$archive" "$tag"
+printf 'gh release create %s %s/* %s --title "DEADGL %s"\n' "$tag" "$dist" "$archive" "$tag"
