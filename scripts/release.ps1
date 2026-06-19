@@ -44,6 +44,10 @@ if ($versionLine -ne "DEADGL $version") { throw "version mismatch: binary says '
 .\build\deadpad.exe append "$dist\deadpad_seed.dgl" line 8 8 120 8 0xff8822
 .\build\deadpad.exe cat "$dist\deadpad_seed.dgl" > "$dist\deadpad_seed.cat"
 .\build\deadgl.exe run "$dist\deadpad_seed.dgl" -o "$dist\deadpad_seed.ppm"
+.\build\deadgl.exe shell "$dist\deadpad_seed.dgl" -o "$dist\shell_file.ppm"
+$shellScript = "$dist\shell.stdin.dgl"
+@('canvas 64 64','clear #050608','line 4 4 60 60 #00ff99') | Set-Content $shellScript
+Get-Content $shellScript | .\build\deadgl.exe shell -o "$dist\shell.ppm"
 .\build\deadgl.exe inspect $clipScene > "$dist\near_clip.main.inspect"
 .\build\deadgl-inspect.exe $clipScene > "$dist\near_clip.inspect"
 .\build\deadgl.exe audit $scene > "$dist\command_machine.audit"
