@@ -6,17 +6,23 @@ A cut is only real when it builds, tests, renders, hashes, and ships.
 
 ## Current stable
 
-v9.0.0
+v10.0.0
 
 ## Next real cut
 
-v10.0.0 command machine suite
+v10.0.1 suite hardening
 
 ## Release command
 
-powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 10.0.0 -Publish
+powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 10.0.1 -Publish
 
-## Suite target
+## Hardening target
+
+- README reflects the v10 command machine suite.
+- PROOF reflects current golden hashes and suite artifacts.
+- Release notes explain this is documentation/proof hardening, not a feature bump.
+
+## Suite baseline
 
 - deadgl: render, prove, hash, inspect, audit, shell, pack, scenepack, suite
 - deadgl-inspect: standalone inspection
@@ -25,7 +31,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 10.0.0 -Publ
 
 ## Queue
 
-v10.0.0 command machine suite
+v10.0.1 suite hardening
 
 ## Working law
 
