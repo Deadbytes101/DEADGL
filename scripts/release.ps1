@@ -26,7 +26,7 @@ function Remove-IfExists {
     }
 }
 
-$version = '1.2.0'
+$version = '1.3.0'
 $tag = "v$version"
 $distRoot = 'dist'
 $dist = Join-Path $distRoot "deadgl-$version"
@@ -92,7 +92,7 @@ $bench | Set-Content build\benchmark.txt
 Copy-Item .\build\deadgl.exe "$dist\deadgl-windows.exe"
 Copy-Item .\build\benchmark.txt "$dist\benchmark.txt"
 Copy-Item README.md, MANIFESTO.md, LICENSE, PROOF.md $dist
-Copy-Item docs\RELEASE_V1.2.0.md "$dist\RELEASE_NOTES.md"
+Copy-Item docs\RELEASE_V1.3.0.md "$dist\RELEASE_NOTES.md"
 
 $sourceItems = @('include','src','tests','examples','docs','scripts','README.md','MANIFESTO.md','Makefile','CMakeLists.txt','LICENSE','PROOF.md')
 $sourceItems = $sourceItems | Where-Object { Test-Path $_ }
@@ -112,4 +112,4 @@ Write-Host "dist folder : $dist"
 Write-Host "source zip  : $archive"
 Write-Host ""
 Write-Host "Optional publish with GitHub CLI:"
-Write-Host "gh release create $tag $dist/* $archive --title 'DEADGL $tag' --notes-file docs/RELEASE_V1.2.0.md"
+Write-Host "gh release create $tag $dist/* $archive --title 'DEADGL $tag' --notes-file docs/RELEASE_V1.3.0.md"
