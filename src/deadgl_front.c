@@ -76,9 +76,25 @@ static int disasm_dgb(const char *src) {
     return 0;
 }
 
+static int text_demo(const char *out) {
+    DGL_Surface s = {0, 0, NULL, NULL};
+    int rc = dgl_surface_init(&s, 640, 160);
+    if (rc != DGL_OK) { fprintf(stderr, "deadgl: surface init failed: %s\n", dgl_result_name(rc)); return 1; }
+    dgl_clear(&s, DGL_RGB(5, 6, 8));
+    dgl_clear_depth(&s, DGL_FAR);
+    dgl_text(&s, 20, 24, DGL_RGB(0, 255, 153), "DEADGL SOFTWARE CONSOLE");
+    dgl_text(&s, 20, 48, DGL_RGB(240, 240, 216), "CPU WRITES PIXELS");
+    dgl_text(&s, 20, 72, DGL_RGB(255, 136, 34), "NO GPU NO ENGINE");
+    printf("hash %016llx\n", (unsigned long long)dgl_hash(&s));
+    rc = dgl_save_ppm(&s, out);
+    dgl_surface_free(&s);
+    return rc == DGL_OK ? 0 : 1;
+}
+
 int main(int argc, char **argv) {
     if (argc == 3 && (strcmp(argv[1], "inspect") == 0 || strcmp(argv[1], "audit") == 0)) { return dgl_inspect_file(argv[2]); }
     if (argc == 3 && strcmp(argv[1], "disasm") == 0) { return disasm_dgb(argv[2]); }
+    if (argc == 4 && strcmp(argv[1], "textdemo") == 0 && strcmp(argv[2], "-o") == 0) { return text_demo(argv[3]); }
     if (argc == 5 && strcmp(argv[1], "pack") == 0 && strcmp(argv[3], "-o") == 0) { return pack_dgb(argv[2], argv[4]); }
     if (argc == 5 && strcmp(argv[1], "unpack") == 0 && strcmp(argv[3], "-o") == 0) { return unpack_dgb(argv[2], argv[4]); }
     return deadgl_render_main(argc, argv);
