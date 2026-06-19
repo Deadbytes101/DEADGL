@@ -1,18 +1,18 @@
 # Inspect
 
-`deadgl-inspect` reads a `.dgl` command stream and prints counters without rendering.
+`deadgl inspect` reads a `.dgl` command stream and prints counters without rendering.
 
 ```sh
-deadgl-inspect --version
+deadgl inspect examples/near_clip.dgl
+deadgl inspect examples/command_machine.dgl
 deadgl-inspect examples/near_clip.dgl
-deadgl-inspect examples/command_machine.dgl
 ```
 
 Output shape:
 
 ```text
 DEADGL_INSPECT
-version 1.9.0
+version 2.0.0
 scene examples/near_clip.dgl
 lines 15
 commands 15
