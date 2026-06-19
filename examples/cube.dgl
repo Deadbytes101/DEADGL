@@ -2,6 +2,7 @@ canvas 640 360
 clear #050608
 grid 32 #111824
 camera 3 2.2 4.2 0 0 0 62
+near 0.05
 light 0.4 1.0 0.7
 shade flat
 cull on
