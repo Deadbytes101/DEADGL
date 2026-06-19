@@ -65,6 +65,8 @@ void dgl_quad(DGL_Surface *s, DGL_Vertex a, DGL_Vertex b, DGL_Vertex c, DGL_Vert
 void dgl_wire_quad_depth(DGL_Surface *s, DGL_Vertex a, DGL_Vertex b, DGL_Vertex c, DGL_Vertex d, uint32_t color);
 void dgl_char(DGL_Surface *s, int x, int y, uint32_t color, char ch);
 void dgl_text(DGL_Surface *s, int x, int y, uint32_t color, const char *text);
+void dgl_tile_grid(DGL_Surface *s, int tile, uint32_t a, uint32_t b);
+void dgl_tile_frame(DGL_Surface *s, int tile, uint32_t color);
 
 uint64_t dgl_hash(const DGL_Surface *s);
 int dgl_save_ppm(const DGL_Surface *s, const char *path);
