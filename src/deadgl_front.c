@@ -148,6 +148,29 @@ static int run_file_shell(const char *src, const char *out) {
     return deadgl_render_main(5, args);
 }
 
+static int suite_report(const char *scene, const char *report) {
+    char ppm[SHELL_LINE_MAX];
+    FILE *f;
+    int n;
+    int rc;
+    n = snprintf(ppm, sizeof(ppm), "%s.ppm", report);
+    if (n < 0 || (size_t)n >= sizeof(ppm)) { fprintf(stderr, "deadgl: suite path too long\n"); return 1; }
+    rc = run_file_shell(scene, ppm);
+    if (rc != 0) { return rc; }
+    f = fopen(report, "wb");
+    if (f == NULL) { fprintf(stderr, "deadgl: cannot write suite report %s\n", report); return 1; }
+    fprintf(f, "DEADGL_SUITE\n");
+    fprintf(f, "version %s\n", dgl_version());
+    fprintf(f, "scene %s\n", scene);
+    fprintf(f, "render_ppm %s\n", ppm);
+    fprintf(f, "deadgl render prove hash inspect audit shell\n");
+    fprintf(f, "deadgl-inspect standalone\n");
+    fprintf(f, "deadpad scene_editor_seed\n");
+    fprintf(f, "deadview native_ppm_viewer_seed\n");
+    fprintf(f, "status ready\n");
+    return fclose(f) == 0 ? 0 : 1;
+}
+
 static int stdin_shell(const char *out) {
     char scene[SHELL_LINE_MAX];
     char line[SHELL_LINE_MAX];
@@ -177,5 +200,6 @@ int main(int argc, char **argv) {
     if (argc == 5 && strcmp(argv[1], "unpack") == 0 && strcmp(argv[3], "-o") == 0) { return unpack_dgb(argv[2], argv[4]); }
     if (argc == 5 && strcmp(argv[1], "scenepack") == 0 && strcmp(argv[3], "-o") == 0) { return pack_dgp(argv[2], argv[4]); }
     if (argc == 5 && strcmp(argv[1], "sceneunpack") == 0 && strcmp(argv[3], "-o") == 0) { return unpack_dgp(argv[2], argv[4]); }
+    if (argc == 5 && strcmp(argv[1], "suite") == 0 && strcmp(argv[3], "-o") == 0) { return suite_report(argv[2], argv[4]); }
     return deadgl_render_main(argc, argv);
 }
