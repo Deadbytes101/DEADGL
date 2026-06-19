@@ -7,20 +7,20 @@ The target is v10, but versions are not allowed to be fake. A cut is only real w
 ## Current stable
 
 ```text
-v2.0.3
+v2.2.0
 ```
 
 ## Next real cut
 
 ```text
-v2.1.0 source-contract split
+v2.3.0 parser diagnostics probe
 ```
 
 ## Release command
 
 ```powershell
 git pull
-powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 2.1.0 -Publish
+powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 2.3.0 -Publish
 ```
 
 ## No fake v10 rule
@@ -39,8 +39,6 @@ deadview        native framebuffer viewer
 ## Queue
 
 ```text
-2.1.0  source-contract split
-2.2.0  golden proof tests
 2.3.0  parser diagnostics
 2.4.0  deterministic audit
 3.0.0  bytecode command stream
