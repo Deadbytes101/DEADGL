@@ -1,6 +1,6 @@
 # State
 
-Current cut: `1.3.0`
+Current cut: `1.4.0`
 
 The renderer is a CPU framebuffer command machine.
 
@@ -16,6 +16,11 @@ face
 wireface
 quad
 wirequad
+vertex
+meshtri
+meshwiretri
+meshquad
+meshwirequad
 cull on/off
 depth-tested wire lines
 depth buffer
@@ -26,7 +31,6 @@ proof file
 Next hard work:
 
 ```text
-indexed mesh command
 flat light
 near-plane clipping
 ```
