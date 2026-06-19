@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.5.0
+
+Flat light cut.
+
+- added `light`
+- added `shade flat`
+- added `shade off`
+- shaded projected face and mesh paths
+- cube scene now uses flat shade
+- command machine scene now uses flat shade
+
 ## v1.4.0
 
 Indexed mesh command cut.
