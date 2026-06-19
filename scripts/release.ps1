@@ -40,6 +40,10 @@ if ($versionLine -ne "DEADGL $version") { throw "version mismatch: binary says '
 .\build\deadgl.exe prove $scene -o "$dist\command_machine.ppm" -p "$dist\command_machine.proof"
 .\build\deadgl.exe prove $clipScene -o "$dist\near_clip.ppm" -p "$dist\near_clip.proof"
 .\build\deadgl.exe textdemo -o "$dist\textdemo.ppm"
+.\build\deadpad.exe new "$dist\deadpad_seed.dgl"
+.\build\deadpad.exe append "$dist\deadpad_seed.dgl" line 8 8 120 8 0xff8822
+.\build\deadpad.exe cat "$dist\deadpad_seed.dgl" > "$dist\deadpad_seed.cat"
+.\build\deadgl.exe run "$dist\deadpad_seed.dgl" -o "$dist\deadpad_seed.ppm"
 .\build\deadgl.exe inspect $clipScene > "$dist\near_clip.main.inspect"
 .\build\deadgl-inspect.exe $clipScene > "$dist\near_clip.inspect"
 .\build\deadgl.exe audit $scene > "$dist\command_machine.audit"
@@ -50,6 +54,7 @@ if ($versionLine -ne "DEADGL $version") { throw "version mismatch: binary says '
 .\build\deadgl.exe hash $clipScene > "$dist\near_clip.hash"
 Copy-Item .\build\deadgl.exe "$dist\deadgl-windows.exe"
 Copy-Item .\build\deadgl-inspect.exe "$dist\deadgl-inspect-windows.exe"
+Copy-Item .\build\deadpad.exe "$dist\deadpad-windows.exe"
 Copy-Item README.md, MANIFESTO.md, LICENSE, PROOF.md $dist
 Copy-Item $notes "$dist\RELEASE_NOTES.md"
 $sourceItems = @('include','src','tests','examples','docs','scripts','README.md','MANIFESTO.md','Makefile','CMakeLists.txt','LICENSE','PROOF.md') | Where-Object { Test-Path $_ }
