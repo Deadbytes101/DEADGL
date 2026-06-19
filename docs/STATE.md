@@ -1,6 +1,6 @@
 # State
 
-Current cut: `1.4.0`
+Current cut: `1.5.0`
 
 The renderer is a CPU framebuffer command machine.
 
@@ -12,6 +12,8 @@ Working path:
 
 ```text
 camera
+light
+shade flat/off
 face
 wireface
 quad
@@ -31,6 +33,5 @@ proof file
 Next hard work:
 
 ```text
-flat light
 near-plane clipping
 ```
