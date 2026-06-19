@@ -18,6 +18,9 @@ $(BUILD):
 $(BUILD)/deadgl.o: src/deadgl.c include/deadgl.h | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
+$(BUILD)/deadgl_tile.o: src/deadgl_tile.c include/deadgl.h | $(BUILD)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
 $(BUILD)/deadgl_cli.o: src/deadgl_cli.c include/deadgl.h | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -Dmain=deadgl_render_main -c $< -o $@
 
@@ -36,10 +39,10 @@ $(BUILD)/deadpad.o: src/deadpad.c include/deadgl.h | $(BUILD)
 $(BUILD)/test_deadgl.o: tests/test_deadgl.c include/deadgl.h | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-$(BUILD)/libdeadgl.a: $(BUILD)/deadgl.o
+$(BUILD)/libdeadgl.a: $(BUILD)/deadgl.o $(BUILD)/deadgl_tile.o
 	$(AR) rcs $@ $^
 
-$(BUILD)/deadgl: $(BUILD)/deadgl.o $(BUILD)/deadgl_cli.o $(BUILD)/deadgl_front.o $(BUILD)/deadgl_inspect_core.o
+$(BUILD)/deadgl: $(BUILD)/deadgl.o $(BUILD)/deadgl_tile.o $(BUILD)/deadgl_cli.o $(BUILD)/deadgl_front.o $(BUILD)/deadgl_inspect_core.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 $(BUILD)/deadgl-inspect: $(BUILD)/deadgl.o $(BUILD)/deadgl_inspect.o $(BUILD)/deadgl_inspect_core.o
@@ -48,7 +51,7 @@ $(BUILD)/deadgl-inspect: $(BUILD)/deadgl.o $(BUILD)/deadgl_inspect.o $(BUILD)/de
 $(BUILD)/deadpad: $(BUILD)/deadgl.o $(BUILD)/deadpad.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-$(BUILD)/test_deadgl: $(BUILD)/deadgl.o $(BUILD)/test_deadgl.o
+$(BUILD)/test_deadgl: $(BUILD)/deadgl.o $(BUILD)/deadgl_tile.o $(BUILD)/test_deadgl.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/test_deadgl
@@ -62,6 +65,7 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/test_dea
 	printf 'canvas 64 64\nclear #050608\nline 4 4 60 60 #00ff99\n' | $(BUILD)/deadgl shell -o $(BUILD)/shell.ppm
 	$(BUILD)/deadgl shell $(BUILD)/deadpad_seed.dgl -o $(BUILD)/shell_file.ppm
 	$(BUILD)/deadgl textdemo -o $(BUILD)/textdemo.ppm
+	$(BUILD)/deadgl tiledemo -o $(BUILD)/tiledemo.ppm
 	$(BUILD)/deadgl inspect examples/near_clip.dgl > $(BUILD)/near_clip.main.inspect
 	$(BUILD)/deadgl audit examples/command_machine.dgl > $(BUILD)/command_machine.audit
 	$(BUILD)/deadgl pack examples/near_clip.dgl -o $(BUILD)/near_clip.dgb
@@ -83,6 +87,7 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/test_dea
 	test -s $(BUILD)/shell.ppm
 	test -s $(BUILD)/shell_file.ppm
 	test -s $(BUILD)/textdemo.ppm
+	test -s $(BUILD)/tiledemo.ppm
 	test -s $(BUILD)/near_clip.main.inspect
 	test -s $(BUILD)/command_machine.audit
 	test -s $(BUILD)/near_clip.dgb
@@ -107,6 +112,7 @@ demo: $(BUILD)/deadgl $(BUILD)/deadpad
 	$(BUILD)/deadgl demo depth -o $(BUILD)/depth.ppm
 	$(BUILD)/deadgl demo cube -o $(BUILD)/cube.ppm
 	$(BUILD)/deadgl textdemo -o $(BUILD)/textdemo.ppm
+	$(BUILD)/deadgl tiledemo -o $(BUILD)/tiledemo.ppm
 	$(BUILD)/deadpad new $(BUILD)/deadpad_seed.dgl
 	$(BUILD)/deadgl shell $(BUILD)/deadpad_seed.dgl -o $(BUILD)/shell_file.ppm
 	$(BUILD)/deadgl run $(BUILD)/deadpad_seed.dgl -o $(BUILD)/deadpad_seed.ppm
