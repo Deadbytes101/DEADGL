@@ -63,6 +63,8 @@ void dgl_wire_tri_depth(DGL_Surface *s, DGL_Vertex a, DGL_Vertex b, DGL_Vertex c
 void dgl_tri(DGL_Surface *s, DGL_Vertex a, DGL_Vertex b, DGL_Vertex c);
 void dgl_quad(DGL_Surface *s, DGL_Vertex a, DGL_Vertex b, DGL_Vertex c, DGL_Vertex d);
 void dgl_wire_quad_depth(DGL_Surface *s, DGL_Vertex a, DGL_Vertex b, DGL_Vertex c, DGL_Vertex d, uint32_t color);
+void dgl_char(DGL_Surface *s, int x, int y, uint32_t color, char ch);
+void dgl_text(DGL_Surface *s, int x, int y, uint32_t color, const char *text);
 
 uint64_t dgl_hash(const DGL_Surface *s);
 int dgl_save_ppm(const DGL_Surface *s, const char *path);
