@@ -25,6 +25,8 @@ Remove-Item $archive -Force -ErrorAction SilentlyContinue
 Remove-Item "$dist\*" -Force -ErrorAction SilentlyContinue
 make clean test
 if ($LASTEXITCODE -ne 0) { throw 'test failed' }
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\golden.ps1
+if ($LASTEXITCODE -ne 0) { throw 'golden proof failed' }
 make clean sanitize
 make clean
 make
