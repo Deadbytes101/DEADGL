@@ -7,20 +7,20 @@ The target is v10, but versions are not allowed to be fake. A cut is only real w
 ## Current stable
 
 ```text
-v5.0.0
+v6.0.0 needs repair cut
 ```
 
 ## Next real cut
 
 ```text
-v6.0.0 live command shell
+v6.0.1 shell packaging repair
 ```
 
 ## Release command
 
 ```powershell
 git pull
-powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 6.0.0 -Publish
+powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 6.0.1 -Publish
 ```
 
 ## No fake v10 rule
@@ -39,7 +39,7 @@ deadview        native framebuffer viewer
 ## Queue
 
 ```text
-6.0.0  live command shell
+6.0.1  shell packaging repair
 7.0.0  tile renderer
 8.0.0  native viewer
 9.0.0  scene pack
