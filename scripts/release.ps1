@@ -64,6 +64,12 @@ $shellScript = "$dist\shell.stdin.dgl"
 @('canvas 64 64','clear #050608','line 4 4 60 60 #00ff99') | Set-Content $shellScript
 .\build\deadgl.exe shell $shellScript -o "$dist\shell.ppm"
 Check-Last 'shell package'
+.\build\deadgl.exe scenepack $scene -o "$dist\command_machine.dgp"
+Check-Last 'scene pack package'
+.\build\deadgl.exe sceneunpack "$dist\command_machine.dgp" -o "$dist\command_machine.unpack.dgl"
+Check-Last 'scene unpack package'
+.\build\deadgl.exe run "$dist\command_machine.unpack.dgl" -o "$dist\command_machine.unpack.ppm"
+Check-Last 'scene unpack render'
 .\build\deadgl.exe inspect $clipScene > "$dist\near_clip.main.inspect"
 Check-Last 'inspect package'
 .\build\deadgl-inspect.exe $clipScene > "$dist\near_clip.inspect"
