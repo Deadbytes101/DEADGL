@@ -22,6 +22,11 @@ int main(void) {
     dgl_text(&s, 2, 2, DGL_RGB(255, 255, 255), "DGL");
     after = dgl_hash(&s);
     CHECK(after != before);
+    before = after;
+    dgl_tile_grid(&s, 8, DGL_RGB(8, 10, 16), DGL_RGB(18, 22, 32));
+    dgl_tile_frame(&s, 8, DGL_RGB(0, 255, 153));
+    after = dgl_hash(&s);
+    CHECK(after != before);
     CHECK(dgl_save_ppm(&s, "deadgl_test.ppm") == DGL_OK);
     remove("deadgl_test.ppm");
     dgl_surface_free(&s);
