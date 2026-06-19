@@ -3,15 +3,23 @@ clear #050608
 grid 32 #111824
 camera 3 2.2 4.2 0 0 0 62
 cull on
-quad -1 -1 1 1 -1 1 1 1 1 -1 1 1 #ff8822
-quad 1 -1 1 1 -1 -1 1 1 -1 1 1 1 #2a96ff
-quad -1 1 1 1 1 1 1 1 -1 -1 1 -1 #00ff99
-quad 1 -1 -1 -1 -1 -1 -1 1 -1 1 1 -1 #142d50
-quad -1 -1 -1 -1 -1 1 -1 1 1 -1 1 -1 #28465f
-quad -1 -1 -1 1 -1 -1 1 -1 1 -1 -1 1 #2d283c
-wirequad -1 -1 1 1 -1 1 1 1 1 -1 1 1 #f0f0d8
-wirequad 1 -1 1 1 -1 -1 1 1 -1 1 1 1 #f0f0d8
-wirequad -1 1 1 1 1 1 1 1 -1 -1 1 -1 #f0f0d8
-wirequad 1 -1 -1 -1 -1 -1 -1 1 -1 1 1 -1 #f0f0d8
-wirequad -1 -1 -1 -1 -1 1 -1 1 1 -1 1 -1 #f0f0d8
-wirequad -1 -1 -1 1 -1 -1 1 -1 1 -1 -1 1 #f0f0d8
+vertex 0 -1 -1 -1
+vertex 1 1 -1 -1
+vertex 2 1 1 -1
+vertex 3 -1 1 -1
+vertex 4 -1 -1 1
+vertex 5 1 -1 1
+vertex 6 1 1 1
+vertex 7 -1 1 1
+meshquad 4 5 6 7 #ff8822
+meshquad 5 1 2 6 #2a96ff
+meshquad 7 6 2 3 #00ff99
+meshquad 1 0 3 2 #142d50
+meshquad 0 4 7 3 #28465f
+meshquad 0 1 5 4 #2d283c
+meshwirequad 4 5 6 7 #f0f0d8
+meshwirequad 5 1 2 6 #f0f0d8
+meshwirequad 7 6 2 3 #f0f0d8
+meshwirequad 1 0 3 2 #f0f0d8
+meshwirequad 0 4 7 3 #f0f0d8
+meshwirequad 0 1 5 4 #f0f0d8
