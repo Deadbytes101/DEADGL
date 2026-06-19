@@ -70,6 +70,8 @@ Check-Last 'scene pack package'
 Check-Last 'scene unpack package'
 .\build\deadgl.exe run "$dist\command_machine.unpack.dgl" -o "$dist\command_machine.unpack.ppm"
 Check-Last 'scene unpack render'
+.\build\deadgl.exe suite $scene -o "$dist\command_machine.suite"
+Check-Last 'suite report package'
 .\build\deadgl.exe inspect $clipScene > "$dist\near_clip.main.inspect"
 Check-Last 'inspect package'
 .\build\deadgl-inspect.exe $clipScene > "$dist\near_clip.inspect"
