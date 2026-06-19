@@ -1,6 +1,6 @@
 # State
 
-Current cut: `1.5.0`
+Current cut: `1.6.0`
 
 The renderer is a CPU framebuffer command machine.
 
@@ -12,6 +12,7 @@ Working path:
 
 ```text
 camera
+near
 light
 shade flat/off
 face
@@ -33,5 +34,5 @@ proof file
 Next hard work:
 
 ```text
-near-plane clipping
+true near-plane polygon clipping
 ```
