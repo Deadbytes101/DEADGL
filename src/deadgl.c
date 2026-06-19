@@ -18,7 +18,7 @@ static uint32_t mixc(uint32_t a,uint32_t b,uint32_t c,double wa,double wb,double
     unsigned int bb=(unsigned int)((double)(a&255u)*wa+(double)(b&255u)*wb+(double)(c&255u)*wc+0.5);
     if(ar>255u){ar=255u;} if(rr>255u){rr=255u;} if(gg>255u){gg=255u;} if(bb>255u){bb=255u;} return DGL_ARGB(ar,rr,gg,bb);
 }
-static unsigned char glyph_row(char ch,int row){unsigned char c=(unsigned char)ch;unsigned char core;if(row<0||row>=7){return 0u;}if(ch==' '){return 0u;}if(row==0||row==6){return 31u;}core=(unsigned char)(((c>>(row-1))^(c*13u)^(unsigned char)(row*29u))&14u);return (unsigned char)(17u|core);}
+static unsigned char glyph_row(char ch,int row){unsigned int r;unsigned int c;unsigned int core;if(row<0||row>=7){return 0u;}if(ch==' '){return 0u;}if(row==0||row==6){return 31u;}r=(unsigned int)row;c=(unsigned int)(unsigned char)ch;core=((c>>(r-1u))^(c*13u)^(r*29u))&14u;return (unsigned char)(17u|core);}
 const char*dgl_version(void){return DGL_VERSION;}
 const char*dgl_result_name(int r){switch(r){case DGL_OK:return"DGL_OK";case DGL_ERR_ARG:return"DGL_ERR_ARG";case DGL_ERR_ALLOC:return"DGL_ERR_ALLOC";case DGL_ERR_RANGE:return"DGL_ERR_RANGE";case DGL_ERR_IO:return"DGL_ERR_IO";case DGL_ERR_PARSE:return"DGL_ERR_PARSE";default:return"DGL_ERR_UNKNOWN";}}
 int dgl_surface_init(DGL_Surface*s,int w,int h){size_t n; if(!s||w<=0||h<=0||w>DGL_MAX_DIM||h>DGL_MAX_DIM){return DGL_ERR_ARG;} n=(size_t)w*(size_t)h; if(n==0u||n>(size_t)DGL_MAX_PIXELS||n>((size_t)-1/sizeof(uint32_t))||n>((size_t)-1/sizeof(float))){return DGL_ERR_RANGE;} s->pixels=(uint32_t*)calloc(n,sizeof(uint32_t)); s->depth=(float*)malloc(n*sizeof(float)); if(!s->pixels||!s->depth){free(s->pixels);free(s->depth);return DGL_ERR_ALLOC;} s->width=w; s->height=h; dgl_clear_depth(s,DGL_FAR); return DGL_OK;}
