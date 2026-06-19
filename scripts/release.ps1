@@ -1,10 +1,25 @@
 $ErrorActionPreference = 'Stop'
-$version = '2.0.0'
+
+$version = $env:DEADGL_RELEASE_VERSION
+if (-not $version -and $env:GITHUB_REF_NAME) { $version = $env:GITHUB_REF_NAME -replace '^v', '' }
+if (-not $version) {
+    $header = Get-Content .\include\deadgl.h -Raw
+    if ($header -match '#define\s+DGL_VERSION\s+"([^"]+)"') { $version = $Matches[1] }
+}
+if (-not $version) { throw 'cannot resolve release version' }
+
 $tag = "v$version"
 $dist = "dist\deadgl-$version"
 $archive = "dist\deadgl-$version-source.zip"
 $scene = 'examples\command_machine.dgl'
 $clipScene = 'examples\near_clip.dgl'
+$notes = "docs\RELEASE_V$version.md"
+if (-not (Test-Path $notes)) {
+    New-Item -ItemType Directory -Force -Path build | Out-Null
+    $notes = 'build\RELEASE_NOTES.generated.md'
+    @("# DEADGL $tag", '', 'Automated release cut.', '', "Built from tag $tag.") | Set-Content $notes
+}
+
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
 Remove-Item $archive -Force -ErrorAction SilentlyContinue
 Remove-Item "$dist\*" -Force -ErrorAction SilentlyContinue
@@ -14,6 +29,8 @@ make clean sanitize
 make clean
 make
 if ($LASTEXITCODE -ne 0) { throw 'build failed' }
+$versionLine = .\build\deadgl.exe --version
+if ($versionLine -ne "DEADGL $version") { throw "version mismatch: binary says '$versionLine', release is '$tag'" }
 .\build\deadgl.exe prove $scene -o "$dist\command_machine.ppm" -p "$dist\command_machine.proof"
 .\build\deadgl.exe prove $clipScene -o "$dist\near_clip.ppm" -p "$dist\near_clip.proof"
 .\build\deadgl.exe inspect $clipScene > "$dist\near_clip.main.inspect"
@@ -23,7 +40,7 @@ if ($LASTEXITCODE -ne 0) { throw 'build failed' }
 Copy-Item .\build\deadgl.exe "$dist\deadgl-windows.exe"
 Copy-Item .\build\deadgl-inspect.exe "$dist\deadgl-inspect-windows.exe"
 Copy-Item README.md, MANIFESTO.md, LICENSE, PROOF.md $dist
-Copy-Item docs\RELEASE_V2.0.0.md "$dist\RELEASE_NOTES.md"
+Copy-Item $notes "$dist\RELEASE_NOTES.md"
 $sourceItems = @('include','src','tests','examples','docs','scripts','README.md','MANIFESTO.md','Makefile','CMakeLists.txt','LICENSE','PROOF.md') | Where-Object { Test-Path $_ }
 Compress-Archive -Path $sourceItems -DestinationPath $archive -Force
 $shaFile = "$dist\SHA256SUMS.txt"
@@ -34,4 +51,4 @@ $archiveHash = Get-FileHash $archive -Algorithm SHA256
 Write-Host "DEADGL local release cut complete."
 Write-Host "dist folder : $dist"
 Write-Host "source zip  : $archive"
-Write-Host "gh release create $tag $dist/* $archive --title 'DEADGL $tag' --notes-file docs/RELEASE_V2.0.0.md"
+Write-Host "gh release create $tag $dist/* $archive --title 'DEADGL $tag' --notes-file $notes"
