@@ -38,14 +38,18 @@ test: $(BUILD)/deadgl $(BUILD)/test_deadgl
 	$(BUILD)/deadgl --version
 	$(BUILD)/deadgl demo shrine -o $(BUILD)/shrine.ppm
 	$(BUILD)/deadgl demo depth -o $(BUILD)/depth.ppm
+	$(BUILD)/deadgl demo cube -o $(BUILD)/cube.ppm
 	$(BUILD)/deadgl run examples/shrine.dgl -o $(BUILD)/scene.ppm
-	$(BUILD)/deadgl prove examples/shrine.dgl -o $(BUILD)/proof.ppm -p $(BUILD)/proof.txt
-	$(BUILD)/deadgl hash examples/shrine.dgl
+	$(BUILD)/deadgl run examples/command_machine.dgl -o $(BUILD)/command_machine.ppm
+	$(BUILD)/deadgl prove examples/near_clip.dgl -o $(BUILD)/near_clip.ppm -p $(BUILD)/near_clip.proof
+	$(BUILD)/deadgl hash examples/near_clip.dgl
 	test -s $(BUILD)/shrine.ppm
 	test -s $(BUILD)/depth.ppm
+	test -s $(BUILD)/cube.ppm
 	test -s $(BUILD)/scene.ppm
-	test -s $(BUILD)/proof.ppm
-	test -s $(BUILD)/proof.txt
+	test -s $(BUILD)/command_machine.ppm
+	test -s $(BUILD)/near_clip.ppm
+	test -s $(BUILD)/near_clip.proof
 
 sanitize:
 	$(MAKE) clean
@@ -61,6 +65,8 @@ sanitize:
 demo: $(BUILD)/deadgl
 	$(BUILD)/deadgl demo shrine -o $(BUILD)/shrine.ppm
 	$(BUILD)/deadgl demo depth -o $(BUILD)/depth.ppm
+	$(BUILD)/deadgl demo cube -o $(BUILD)/cube.ppm
+	$(BUILD)/deadgl run examples/near_clip.dgl -o $(BUILD)/near_clip.ppm
 
 debug:
 	sh scripts/debug_probe.sh
