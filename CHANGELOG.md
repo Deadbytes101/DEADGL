@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.3.0
+
+Hidden-line geometry cut.
+
+- added depth-tested wire lines
+- added `quad`
+- added `wirequad`
+- added `cull on|off`
+- cube demo now uses quads
+- command machine scene now uses quads
+
 ## v1.2.0
 
 Geometry pipe cut.
