@@ -39,6 +39,7 @@ if ($versionLine -ne "DEADGL $version") { throw "version mismatch: binary says '
 .\build\deadgl.exe prove $clipScene -o "$dist\near_clip.ppm" -p "$dist\near_clip.proof"
 .\build\deadgl.exe inspect $clipScene > "$dist\near_clip.main.inspect"
 .\build\deadgl-inspect.exe $clipScene > "$dist\near_clip.inspect"
+.\build\deadgl.exe audit $scene > "$dist\command_machine.audit"
 .\build\deadgl.exe hash $scene > "$dist\command_machine.hash"
 .\build\deadgl.exe hash $clipScene > "$dist\near_clip.hash"
 Copy-Item .\build\deadgl.exe "$dist\deadgl-windows.exe"
