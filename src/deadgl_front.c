@@ -17,6 +17,17 @@ static int copy_bytes(FILE *in, FILE *out) {
     return ferror(in) ? 1 : 0;
 }
 
+static int count_payload(FILE *in, unsigned long *bytes, unsigned long *lines) {
+    int ch;
+    *bytes = 0u;
+    *lines = 0u;
+    while ((ch = fgetc(in)) != EOF) {
+        (*bytes)++;
+        if (ch == '\n') { (*lines)++; }
+    }
+    return ferror(in) ? 1 : 0;
+}
+
 static int pack_dgb(const char *src, const char *dst) {
     FILE *in = fopen(src, "rb");
     FILE *out;
@@ -28,14 +39,19 @@ static int pack_dgb(const char *src, const char *dst) {
     return fclose(out) == 0 ? 0 : 1;
 }
 
+static int read_dgb_header(FILE *in, const char *src) {
+    char magic[sizeof(DGB_MAGIC)];
+    if (fread(magic, 1u, sizeof(DGB_MAGIC) - 1u, in) != sizeof(DGB_MAGIC) - 1u) { fprintf(stderr, "deadgl: bad dgb header %s\n", src); return 1; }
+    magic[sizeof(DGB_MAGIC) - 1u] = '\0';
+    if (strcmp(magic, DGB_MAGIC) != 0) { fprintf(stderr, "deadgl: bad dgb magic %s\n", src); return 1; }
+    return 0;
+}
+
 static int unpack_dgb(const char *src, const char *dst) {
     FILE *in = fopen(src, "rb");
     FILE *out;
-    char magic[sizeof(DGB_MAGIC)];
     if (in == NULL) { fprintf(stderr, "deadgl: cannot open %s\n", src); return 1; }
-    if (fread(magic, 1u, sizeof(DGB_MAGIC) - 1u, in) != sizeof(DGB_MAGIC) - 1u) { fprintf(stderr, "deadgl: bad dgb header\n"); fclose(in); return 1; }
-    magic[sizeof(DGB_MAGIC) - 1u] = '\0';
-    if (strcmp(magic, DGB_MAGIC) != 0) { fprintf(stderr, "deadgl: bad dgb magic\n"); fclose(in); return 1; }
+    if (read_dgb_header(in, src) != 0) { fclose(in); return 1; }
     out = fopen(dst, "wb");
     if (out == NULL) { fprintf(stderr, "deadgl: cannot write %s\n", dst); fclose(in); return 1; }
     if (copy_bytes(in, out) != 0) { fprintf(stderr, "deadgl: unpack failed\n"); fclose(in); fclose(out); return 1; }
@@ -43,8 +59,26 @@ static int unpack_dgb(const char *src, const char *dst) {
     return fclose(out) == 0 ? 0 : 1;
 }
 
+static int disasm_dgb(const char *src) {
+    FILE *in = fopen(src, "rb");
+    unsigned long bytes;
+    unsigned long lines;
+    if (in == NULL) { fprintf(stderr, "deadgl: cannot open %s\n", src); return 1; }
+    if (read_dgb_header(in, src) != 0) { fclose(in); return 1; }
+    if (count_payload(in, &bytes, &lines) != 0) { fprintf(stderr, "deadgl: disasm failed\n"); fclose(in); return 1; }
+    fclose(in);
+    printf("DEADGL_DGB\n");
+    printf("version %s\n", dgl_version());
+    printf("file %s\n", src);
+    printf("magic DEADGL_DGB_1\n");
+    printf("payload_bytes %lu\n", bytes);
+    printf("payload_lines %lu\n", lines);
+    return 0;
+}
+
 int main(int argc, char **argv) {
     if (argc == 3 && (strcmp(argv[1], "inspect") == 0 || strcmp(argv[1], "audit") == 0)) { return dgl_inspect_file(argv[2]); }
+    if (argc == 3 && strcmp(argv[1], "disasm") == 0) { return disasm_dgb(argv[2]); }
     if (argc == 5 && strcmp(argv[1], "pack") == 0 && strcmp(argv[3], "-o") == 0) { return pack_dgb(argv[2], argv[4]); }
     if (argc == 5 && strcmp(argv[1], "unpack") == 0 && strcmp(argv[3], "-o") == 0) { return unpack_dgb(argv[2], argv[4]); }
     return deadgl_render_main(argc, argv);
