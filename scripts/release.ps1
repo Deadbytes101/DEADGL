@@ -41,6 +41,7 @@ if ($versionLine -ne "DEADGL $version") { throw "version mismatch: binary says '
 .\build\deadgl-inspect.exe $clipScene > "$dist\near_clip.inspect"
 .\build\deadgl.exe audit $scene > "$dist\command_machine.audit"
 .\build\deadgl.exe pack $clipScene -o "$dist\near_clip.dgb"
+.\build\deadgl.exe disasm "$dist\near_clip.dgb" > "$dist\near_clip.disasm"
 .\build\deadgl.exe unpack "$dist\near_clip.dgb" -o "$dist\near_clip.unpack.dgl"
 .\build\deadgl.exe hash $scene > "$dist\command_machine.hash"
 .\build\deadgl.exe hash $clipScene > "$dist\near_clip.hash"
