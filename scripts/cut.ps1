@@ -31,6 +31,18 @@ function Run-Command {
     }
 }
 
+function Test-ReleaseExists {
+    param([Parameter(Mandatory = $true)][string]$Tag)
+    cmd /c "gh release view $Tag --repo Deadbytes101/DEADGL >NUL 2>NUL"
+    return $LASTEXITCODE -eq 0
+}
+
+function Test-TagExists {
+    param([Parameter(Mandatory = $true)][string]$Tag)
+    cmd /c "git rev-parse --verify refs/tags/$Tag >NUL 2>NUL"
+    return $LASTEXITCODE -eq 0
+}
+
 if ($Version -notmatch '^\d+\.\d+\.\d+$') {
     throw "bad version: $Version"
 }
@@ -41,13 +53,11 @@ if ($dirty) {
     throw "working tree is dirty; commit/stash changes first"
 }
 
-gh release view $tag --repo Deadbytes101/DEADGL *> $null
-if ($LASTEXITCODE -eq 0) {
+if (Test-ReleaseExists $tag) {
     throw "release already exists: $tag"
 }
 
-git rev-parse $tag *> $null
-if ($LASTEXITCODE -eq 0) {
+if (Test-TagExists $tag) {
     throw "tag already exists: $tag"
 }
 
@@ -67,7 +77,7 @@ if (!(Test-Path $notes)) {
         '## Changed',
         '',
         '- version bump',
-        '- release automation path verified',
+        '- one-command release path verified',
         '',
         '## Run',
         '',
@@ -98,7 +108,10 @@ Run-Command git @('tag', $tag)
 if ($Publish) {
     Run-Command git @('push', 'origin', 'main')
     Run-Command git @('push', 'origin', $tag)
-    Run-Command gh @('release', 'create', $tag, ".\dist\deadgl-$Version\*", ".\dist\deadgl-$Version-source.zip", '--repo', 'Deadbytes101/DEADGL', '--title', "DEADGL $tag", '--notes-file', $notes)
+    $assets = @(Get-ChildItem $dist -File | ForEach-Object { $_.FullName })
+    $assets += (Resolve-Path $archive).Path
+    $ghArgs = @('release', 'create', $tag) + $assets + @('--repo', 'Deadbytes101/DEADGL', '--title', "DEADGL $tag", '--notes-file', $notes)
+    Run-Command gh $ghArgs
 }
 
 Write-Host "DEADGL cut complete: $tag"
