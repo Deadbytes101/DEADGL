@@ -5,6 +5,7 @@ version=$(sed -n 's/^#define DGL_VERSION "\([^"]*\)".*/\1/p' include/deadgl.h | 
 tag="v$version"
 dist="dist/deadgl-$version"
 archive="dist/deadgl-$version-source.tar.gz"
+notes="docs/RELEASE_V$version.md"
 
 rm -rf dist
 mkdir -p "$dist"
@@ -23,7 +24,7 @@ cp build/deadgl "$dist/deadgl-linux-x86_64" 2>/dev/null || cp build/deadgl.exe "
 cp build/deadgl-inspect "$dist/deadgl-inspect-linux-x86_64" 2>/dev/null || cp build/deadgl-inspect.exe "$dist/deadgl-inspect-windows.exe"
 cp build/benchmark.txt "$dist/benchmark.txt"
 cp README.md MANIFESTO.md LICENSE PROOF.md "$dist/"
-cp docs/RELEASE_V2.0.0.md "$dist/RELEASE_NOTES.md"
+if [ -f "$notes" ]; then cp "$notes" "$dist/RELEASE_NOTES.md"; else cp docs/RELEASE_V2.0.0.md "$dist/RELEASE_NOTES.md"; fi
 
 tar --exclude=.git --exclude=build --exclude=build-cmake --exclude=dist -czf "$archive" .
 
