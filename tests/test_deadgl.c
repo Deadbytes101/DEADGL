@@ -9,7 +9,7 @@
 
 static int test_surface_contract(void) {
     DGL_Surface s = {0, 0, NULL, NULL};
-    CHECK(strcmp(dgl_version(), "1.6.0") == 0);
+    CHECK(strcmp(dgl_version(), "1.7.0") == 0);
     CHECK(dgl_surface_init(NULL, 1, 1) == DGL_ERR_ARG);
     CHECK(dgl_surface_init(&s, 0, 1) == DGL_ERR_ARG);
     CHECK(dgl_surface_init(&s, DGL_MAX_DIM + 1, 1) == DGL_ERR_ARG);
