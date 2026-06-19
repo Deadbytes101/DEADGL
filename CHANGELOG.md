@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.7.0
+
+Near-plane clipping cut.
+
+- added triangle clipping at near plane
+- added quad clipping at near plane
+- clipped projected fill path
+- clipped projected wire path
+
 ## v1.6.0
 
 Near-plane guard cut.
