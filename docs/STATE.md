@@ -1,6 +1,6 @@
 # State
 
-Current cut: `4.0.0`
+Current cut: `5.0.0`
 
 The renderer is a CPU framebuffer command machine.
 
