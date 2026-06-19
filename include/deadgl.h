@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#define DGL_VERSION "5.0.0"
+#define DGL_VERSION "6.0.0"
 #define DGL_MAX_DIM 16384
 #define DGL_MAX_PIXELS 67108864u
 #define DGL_FAR 1.0e30f
