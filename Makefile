@@ -19,6 +19,12 @@ $(BUILD)/deadgl.o: src/deadgl.c include/deadgl.h | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 $(BUILD)/deadgl_cli.o: src/deadgl_cli.c include/deadgl.h | $(BUILD)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -Dmain=deadgl_render_main -c $< -o $@
+
+$(BUILD)/deadgl_front.o: src/deadgl_front.c include/deadgl.h | $(BUILD)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+$(BUILD)/deadgl_inspect_core.o: src/deadgl_inspect_core.c include/deadgl.h | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 $(BUILD)/deadgl_inspect.o: src/deadgl_inspect.c include/deadgl.h | $(BUILD)
@@ -30,10 +36,10 @@ $(BUILD)/test_deadgl.o: tests/test_deadgl.c include/deadgl.h | $(BUILD)
 $(BUILD)/libdeadgl.a: $(BUILD)/deadgl.o
 	$(AR) rcs $@ $^
 
-$(BUILD)/deadgl: $(BUILD)/deadgl.o $(BUILD)/deadgl_cli.o
+$(BUILD)/deadgl: $(BUILD)/deadgl.o $(BUILD)/deadgl_cli.o $(BUILD)/deadgl_front.o $(BUILD)/deadgl_inspect_core.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-$(BUILD)/deadgl-inspect: $(BUILD)/deadgl.o $(BUILD)/deadgl_inspect.o
+$(BUILD)/deadgl-inspect: $(BUILD)/deadgl.o $(BUILD)/deadgl_inspect.o $(BUILD)/deadgl_inspect_core.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 $(BUILD)/test_deadgl: $(BUILD)/deadgl.o $(BUILD)/test_deadgl.o
@@ -42,6 +48,7 @@ $(BUILD)/test_deadgl: $(BUILD)/deadgl.o $(BUILD)/test_deadgl.o
 test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/test_deadgl
 	$(BUILD)/test_deadgl
 	$(BUILD)/deadgl --version
+	$(BUILD)/deadgl inspect examples/near_clip.dgl > $(BUILD)/near_clip.main.inspect
 	$(BUILD)/deadgl-inspect --version
 	$(BUILD)/deadgl demo shrine -o $(BUILD)/shrine.ppm
 	$(BUILD)/deadgl demo depth -o $(BUILD)/depth.ppm
@@ -51,14 +58,9 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/test_deadgl
 	$(BUILD)/deadgl prove examples/near_clip.dgl -o $(BUILD)/near_clip.ppm -p $(BUILD)/near_clip.proof
 	$(BUILD)/deadgl-inspect examples/near_clip.dgl > $(BUILD)/near_clip.inspect
 	$(BUILD)/deadgl hash examples/near_clip.dgl
-	test -s $(BUILD)/shrine.ppm
-	test -s $(BUILD)/depth.ppm
-	test -s $(BUILD)/cube.ppm
-	test -s $(BUILD)/scene.ppm
-	test -s $(BUILD)/command_machine.ppm
-	test -s $(BUILD)/near_clip.ppm
-	test -s $(BUILD)/near_clip.proof
+	test -s $(BUILD)/near_clip.main.inspect
 	test -s $(BUILD)/near_clip.inspect
+	test -s $(BUILD)/near_clip.proof
 
 sanitize:
 	$(MAKE) clean
