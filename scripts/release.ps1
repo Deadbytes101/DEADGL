@@ -48,6 +48,8 @@ Check-Last 'prove near_clip'
 Check-Last 'textdemo package'
 .\build\deadgl.exe tiledemo -o "$dist\tiledemo.ppm"
 Check-Last 'tiledemo package'
+.\build\deadview.exe "$dist\tiledemo.ppm" > "$dist\tiledemo.view"
+Check-Last 'deadview package'
 .\build\deadpad.exe new "$dist\deadpad_seed.dgl"
 Check-Last 'deadpad seed'
 .\build\deadpad.exe append "$dist\deadpad_seed.dgl" line 8 8 120 8 0xff8822
@@ -81,6 +83,7 @@ Check-Last 'hash near_clip'
 Copy-Item .\build\deadgl.exe "$dist\deadgl-windows.exe"
 Copy-Item .\build\deadgl-inspect.exe "$dist\deadgl-inspect-windows.exe"
 Copy-Item .\build\deadpad.exe "$dist\deadpad-windows.exe"
+Copy-Item .\build\deadview.exe "$dist\deadview-windows.exe"
 Copy-Item README.md, MANIFESTO.md, LICENSE, PROOF.md $dist
 Copy-Item $notes "$dist\RELEASE_NOTES.md"
 $sourceItems = @('include','src','tests','examples','docs','scripts','README.md','MANIFESTO.md','Makefile','CMakeLists.txt','LICENSE','PROOF.md') | Where-Object { Test-Path $_ }
