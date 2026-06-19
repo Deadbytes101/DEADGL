@@ -1,6 +1,6 @@
 # State
 
-Current cut: `1.8.0`
+Current cut: `1.9.0`
 
 The renderer is a CPU framebuffer command machine.
 
@@ -31,10 +31,18 @@ depth-tested wire lines
 depth buffer
 PPM output
 proof file
+scene inspector tool
+```
+
+Tool split:
+
+```text
+deadgl          render/prove/hash
+deadgl-inspect  inspect .dgl without rendering
 ```
 
 Next hard work:
 
 ```text
-CLI scene inspection
+merge inspect into main CLI
 ```
