@@ -23,6 +23,7 @@ make
 
 ```sh
 ./build/deadgl --version
+./build/deadgl grammar
 ./build/deadgl demo cube -o cube.ppm
 ./build/deadgl run examples/command_machine.dgl -o command_machine.ppm
 ./build/deadgl prove examples/command_machine.dgl -o command_machine.ppm -p command_machine.proof
@@ -34,11 +35,21 @@ make
 ## Suite tools
 
 ```text
-deadgl          render / prove / hash / inspect / audit / shell / pack / scenepack / suite
+deadgl          render / prove / hash / inspect / audit / shell / pack / scenepack / suite / grammar
 deadgl-inspect  standalone scene inspection
 deadpad         plain-text scene editor seed
 deadview        native PPM viewer seed
 ```
+
+## DGL language
+
+See `docs/DGL_LANGUAGE.md` or run:
+
+```sh
+./build/deadgl grammar
+```
+
+The release package includes `dgl.grammar` beside the proof artifacts.
 
 ## Suite run
 
@@ -53,7 +64,7 @@ deadview        native PPM viewer seed
 ## Release
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 10.0.1 -Publish
+powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 11.0.1 -Publish
 ```
 
 The release cutter must build, test, render, hash, package proof artifacts, tag, and publish. If any checked step fails, the cut is not real.
@@ -68,6 +79,7 @@ The release cutter must build, test, render, hash, package proof artifacts, tag,
 - projected 3D faces
 - explicit camera command
 - strict `.dgl` parser
+- grammar report
 - DGB bytecode envelope
 - DGP scene-pack envelope
 - shell command stream
@@ -89,7 +101,7 @@ The release cutter must build, test, render, hash, package proof artifacts, tag,
 
 ```text
 DEADGL_PROOF
-version 10.0.0
+version 11.0.0
 scene examples/command_machine.dgl
 output command_machine.ppm
 width 640
