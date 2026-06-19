@@ -59,6 +59,8 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/test_dea
 	$(BUILD)/deadpad append $(BUILD)/deadpad_seed.dgl line 8 8 120 8 0xff8822
 	$(BUILD)/deadpad cat $(BUILD)/deadpad_seed.dgl > $(BUILD)/deadpad_seed.cat
 	$(BUILD)/deadgl run $(BUILD)/deadpad_seed.dgl -o $(BUILD)/deadpad_seed.ppm
+	printf 'canvas 64 64\nclear #050608\nline 4 4 60 60 #00ff99\n' | $(BUILD)/deadgl shell -o $(BUILD)/shell.ppm
+	$(BUILD)/deadgl shell $(BUILD)/deadpad_seed.dgl -o $(BUILD)/shell_file.ppm
 	$(BUILD)/deadgl textdemo -o $(BUILD)/textdemo.ppm
 	$(BUILD)/deadgl inspect examples/near_clip.dgl > $(BUILD)/near_clip.main.inspect
 	$(BUILD)/deadgl audit examples/command_machine.dgl > $(BUILD)/command_machine.audit
@@ -78,6 +80,8 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/test_dea
 	test -s $(BUILD)/deadpad_seed.dgl
 	test -s $(BUILD)/deadpad_seed.cat
 	test -s $(BUILD)/deadpad_seed.ppm
+	test -s $(BUILD)/shell.ppm
+	test -s $(BUILD)/shell_file.ppm
 	test -s $(BUILD)/textdemo.ppm
 	test -s $(BUILD)/near_clip.main.inspect
 	test -s $(BUILD)/command_machine.audit
@@ -104,6 +108,7 @@ demo: $(BUILD)/deadgl $(BUILD)/deadpad
 	$(BUILD)/deadgl demo cube -o $(BUILD)/cube.ppm
 	$(BUILD)/deadgl textdemo -o $(BUILD)/textdemo.ppm
 	$(BUILD)/deadpad new $(BUILD)/deadpad_seed.dgl
+	$(BUILD)/deadgl shell $(BUILD)/deadpad_seed.dgl -o $(BUILD)/shell_file.ppm
 	$(BUILD)/deadgl run $(BUILD)/deadpad_seed.dgl -o $(BUILD)/deadpad_seed.ppm
 	$(BUILD)/deadgl run examples/near_clip.dgl -o $(BUILD)/near_clip.ppm
 
