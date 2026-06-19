@@ -49,6 +49,7 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/test_deadgl
 	$(BUILD)/test_deadgl
 	$(BUILD)/deadgl --version
 	$(BUILD)/deadgl inspect examples/near_clip.dgl > $(BUILD)/near_clip.main.inspect
+	$(BUILD)/deadgl audit examples/command_machine.dgl > $(BUILD)/command_machine.audit
 	$(BUILD)/deadgl-inspect --version
 	$(BUILD)/deadgl demo shrine -o $(BUILD)/shrine.ppm
 	$(BUILD)/deadgl demo depth -o $(BUILD)/depth.ppm
@@ -59,6 +60,7 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/test_deadgl
 	$(BUILD)/deadgl-inspect examples/near_clip.dgl > $(BUILD)/near_clip.inspect
 	$(BUILD)/deadgl hash examples/near_clip.dgl
 	test -s $(BUILD)/near_clip.main.inspect
+	test -s $(BUILD)/command_machine.audit
 	test -s $(BUILD)/near_clip.inspect
 	test -s $(BUILD)/near_clip.proof
 
