@@ -17,10 +17,15 @@ ztri X0 Y0 Z0 X1 Y1 Z1 X2 Y2 Z2 COLOR
 camera EX EY EZ TX TY TZ FOV
 cull on
 cull off
+vertex ID X Y Z
 face X0 Y0 Z0 X1 Y1 Z1 X2 Y2 Z2 COLOR
 wireface X0 Y0 Z0 X1 Y1 Z1 X2 Y2 Z2 COLOR
 quad X0 Y0 Z0 X1 Y1 Z1 X2 Y2 Z2 X3 Y3 Z3 COLOR
 wirequad X0 Y0 Z0 X1 Y1 Z1 X2 Y2 Z2 X3 Y3 Z3 COLOR
+meshtri A B C COLOR
+meshwiretri A B C COLOR
+meshquad A B C D COLOR
+meshwirequad A B C D COLOR
 ```
 
 Color forms:
