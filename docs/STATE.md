@@ -33,6 +33,7 @@ PPM output
 proof file
 scene inspector tool
 main CLI inspect command
+local one-command release cutter
 ```
 
 CLI shape:
@@ -42,8 +43,22 @@ deadgl render/prove/hash/inspect
 deadgl-inspect standalone inspector
 ```
 
+Road:
+
+```text
+v2.1  source split without hash movement
+v3    bytecode command stream
+v4    software console overlay
+v5    tiny editor seed
+v6    live shell
+v7    tile renderer
+v8    native viewer
+v9    scene pack
+v10   command machine suite
+```
+
 Next hard work:
 
 ```text
-clean up CLI internals
+split deadgl_cli.c into small C units without changing output hashes
 ```
