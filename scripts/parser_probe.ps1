@@ -12,8 +12,8 @@ function Check-BadScene($Name, $Lines, $Text) {
     $out = "build\parser_probe\$Name.ppm"
     $stdout = "build\parser_probe\$Name.stdout"
     $stderr = "build\parser_probe\$Name.stderr"
-    & .\build\deadgl.exe run $scene -o $out 1> $stdout 2> $stderr
-    if ($LASTEXITCODE -eq 0) { throw "expected parser failure: $Name" }
+    $p = Start-Process -FilePath '.\build\deadgl.exe' -ArgumentList @('run', $scene, '-o', $out) -RedirectStandardOutput $stdout -RedirectStandardError $stderr -NoNewWindow -Wait -PassThru
+    if ($p.ExitCode -eq 0) { throw "expected parser failure: $Name" }
     $err = Get-Content $stderr -Raw
     if ($err -notmatch [regex]::Escape($Text)) { throw "missing parser text: $Text" }
     Write-Host "PARSER $Name $Text"
