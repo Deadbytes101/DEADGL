@@ -4,6 +4,7 @@
 #include <string.h>
 
 #define DGB_MAGIC "DEADGL_DGB_1\n"
+#define DGP_MAGIC "DEADGL_DGP_1\n"
 #define SHELL_LINE_MAX 1024
 
 int deadgl_render_main(int argc, char **argv);
@@ -40,11 +41,30 @@ static int pack_dgb(const char *src, const char *dst) {
     return fclose(out) == 0 ? 0 : 1;
 }
 
+static int pack_dgp(const char *src, const char *dst) {
+    FILE *in = fopen(src, "rb");
+    FILE *out;
+    if (in == NULL) { fprintf(stderr, "deadgl: cannot open %s\n", src); return 1; }
+    out = fopen(dst, "wb");
+    if (out == NULL) { fprintf(stderr, "deadgl: cannot write %s\n", dst); fclose(in); return 1; }
+    if (fputs(DGP_MAGIC, out) < 0 || copy_bytes(in, out) != 0) { fprintf(stderr, "deadgl: scenepack failed\n"); fclose(in); fclose(out); return 1; }
+    fclose(in);
+    return fclose(out) == 0 ? 0 : 1;
+}
+
 static int read_dgb_header(FILE *in, const char *src) {
     char magic[sizeof(DGB_MAGIC)];
     if (fread(magic, 1u, sizeof(DGB_MAGIC) - 1u, in) != sizeof(DGB_MAGIC) - 1u) { fprintf(stderr, "deadgl: bad dgb header %s\n", src); return 1; }
     magic[sizeof(DGB_MAGIC) - 1u] = '\0';
     if (strcmp(magic, DGB_MAGIC) != 0) { fprintf(stderr, "deadgl: bad dgb magic %s\n", src); return 1; }
+    return 0;
+}
+
+static int read_dgp_header(FILE *in, const char *src) {
+    char magic[sizeof(DGP_MAGIC)];
+    if (fread(magic, 1u, sizeof(DGP_MAGIC) - 1u, in) != sizeof(DGP_MAGIC) - 1u) { fprintf(stderr, "deadgl: bad dgp header %s\n", src); return 1; }
+    magic[sizeof(DGP_MAGIC) - 1u] = '\0';
+    if (strcmp(magic, DGP_MAGIC) != 0) { fprintf(stderr, "deadgl: bad dgp magic %s\n", src); return 1; }
     return 0;
 }
 
@@ -56,6 +76,18 @@ static int unpack_dgb(const char *src, const char *dst) {
     out = fopen(dst, "wb");
     if (out == NULL) { fprintf(stderr, "deadgl: cannot write %s\n", dst); fclose(in); return 1; }
     if (copy_bytes(in, out) != 0) { fprintf(stderr, "deadgl: unpack failed\n"); fclose(in); fclose(out); return 1; }
+    fclose(in);
+    return fclose(out) == 0 ? 0 : 1;
+}
+
+static int unpack_dgp(const char *src, const char *dst) {
+    FILE *in = fopen(src, "rb");
+    FILE *out;
+    if (in == NULL) { fprintf(stderr, "deadgl: cannot open %s\n", src); return 1; }
+    if (read_dgp_header(in, src) != 0) { fclose(in); return 1; }
+    out = fopen(dst, "wb");
+    if (out == NULL) { fprintf(stderr, "deadgl: cannot write %s\n", dst); fclose(in); return 1; }
+    if (copy_bytes(in, out) != 0) { fprintf(stderr, "deadgl: sceneunpack failed\n"); fclose(in); fclose(out); return 1; }
     fclose(in);
     return fclose(out) == 0 ? 0 : 1;
 }
@@ -143,5 +175,7 @@ int main(int argc, char **argv) {
     if (argc == 5 && strcmp(argv[1], "shell") == 0 && strcmp(argv[3], "-o") == 0) { return run_file_shell(argv[2], argv[4]); }
     if (argc == 5 && strcmp(argv[1], "pack") == 0 && strcmp(argv[3], "-o") == 0) { return pack_dgb(argv[2], argv[4]); }
     if (argc == 5 && strcmp(argv[1], "unpack") == 0 && strcmp(argv[3], "-o") == 0) { return unpack_dgb(argv[2], argv[4]); }
+    if (argc == 5 && strcmp(argv[1], "scenepack") == 0 && strcmp(argv[3], "-o") == 0) { return pack_dgp(argv[2], argv[4]); }
+    if (argc == 5 && strcmp(argv[1], "sceneunpack") == 0 && strcmp(argv[3], "-o") == 0) { return unpack_dgp(argv[2], argv[4]); }
     return deadgl_render_main(argc, argv);
 }
