@@ -4,6 +4,7 @@
 #include <string.h>
 
 #define DGB_MAGIC "DEADGL_DGB_1\n"
+#define SHELL_LINE_MAX 1024
 
 int deadgl_render_main(int argc, char **argv);
 int dgl_inspect_file(const char *path);
@@ -91,10 +92,40 @@ static int text_demo(const char *out) {
     return rc == DGL_OK ? 0 : 1;
 }
 
+static int run_file_shell(const char *src, const char *out) {
+    char *args[5];
+    args[0] = "deadgl";
+    args[1] = "run";
+    args[2] = (char *)src;
+    args[3] = "-o";
+    args[4] = (char *)out;
+    return deadgl_render_main(5, args);
+}
+
+static int stdin_shell(const char *out) {
+    char scene[SHELL_LINE_MAX];
+    char line[SHELL_LINE_MAX];
+    FILE *f;
+    int rc;
+    if (snprintf(scene, sizeof(scene), "%s.shell.dgl", out) < 0 || strlen(out) + 10u >= sizeof(scene)) { fprintf(stderr, "deadgl: shell path too long\n"); return 1; }
+    f = fopen(scene, "wb");
+    if (f == NULL) { fprintf(stderr, "deadgl: cannot write shell stream %s\n", scene); return 1; }
+    while (fgets(line, sizeof(line), stdin) != NULL) {
+        if (fputs(line, f) < 0) { fclose(f); remove(scene); return 1; }
+    }
+    if (ferror(stdin)) { fclose(f); remove(scene); return 1; }
+    if (fclose(f) != 0) { remove(scene); return 1; }
+    rc = run_file_shell(scene, out);
+    remove(scene);
+    return rc;
+}
+
 int main(int argc, char **argv) {
     if (argc == 3 && (strcmp(argv[1], "inspect") == 0 || strcmp(argv[1], "audit") == 0)) { return dgl_inspect_file(argv[2]); }
     if (argc == 3 && strcmp(argv[1], "disasm") == 0) { return disasm_dgb(argv[2]); }
     if (argc == 4 && strcmp(argv[1], "textdemo") == 0 && strcmp(argv[2], "-o") == 0) { return text_demo(argv[3]); }
+    if (argc == 4 && strcmp(argv[1], "shell") == 0 && strcmp(argv[2], "-o") == 0) { return stdin_shell(argv[3]); }
+    if (argc == 5 && strcmp(argv[1], "shell") == 0 && strcmp(argv[3], "-o") == 0) { return run_file_shell(argv[2], argv[4]); }
     if (argc == 5 && strcmp(argv[1], "pack") == 0 && strcmp(argv[3], "-o") == 0) { return pack_dgb(argv[2], argv[4]); }
     if (argc == 5 && strcmp(argv[1], "unpack") == 0 && strcmp(argv[3], "-o") == 0) { return unpack_dgb(argv[2], argv[4]); }
     return deadgl_render_main(argc, argv);
