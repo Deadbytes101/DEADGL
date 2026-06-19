@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.6.0
+
+Near-plane guard cut.
+
+- added `near`
+- camera near plane can be set from `.dgl`
+- cube scene sets explicit near plane
+- command machine scene sets explicit near plane
+
 ## v1.5.0
 
 Flat light cut.
