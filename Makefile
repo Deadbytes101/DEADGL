@@ -74,6 +74,10 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/deadview
 	$(BUILD)/deadgl textdemo -o $(BUILD)/textdemo.ppm
 	$(BUILD)/deadgl tiledemo -o $(BUILD)/tiledemo.ppm
 	$(BUILD)/deadview $(BUILD)/tiledemo.ppm > $(BUILD)/tiledemo.view
+	$(BUILD)/deadgl scenepack examples/command_machine.dgl -o $(BUILD)/command_machine.dgp
+	$(BUILD)/deadgl sceneunpack $(BUILD)/command_machine.dgp -o $(BUILD)/command_machine.unpack.dgl
+	cmp examples/command_machine.dgl $(BUILD)/command_machine.unpack.dgl
+	$(BUILD)/deadgl run $(BUILD)/command_machine.unpack.dgl -o $(BUILD)/command_machine.unpack.ppm
 	$(BUILD)/deadgl inspect examples/near_clip.dgl > $(BUILD)/near_clip.main.inspect
 	$(BUILD)/deadgl audit examples/command_machine.dgl > $(BUILD)/command_machine.audit
 	$(BUILD)/deadgl pack examples/near_clip.dgl -o $(BUILD)/near_clip.dgb
@@ -97,6 +101,9 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/deadview
 	test -s $(BUILD)/textdemo.ppm
 	test -s $(BUILD)/tiledemo.ppm
 	test -s $(BUILD)/tiledemo.view
+	test -s $(BUILD)/command_machine.dgp
+	test -s $(BUILD)/command_machine.unpack.dgl
+	test -s $(BUILD)/command_machine.unpack.ppm
 	test -s $(BUILD)/near_clip.main.inspect
 	test -s $(BUILD)/command_machine.audit
 	test -s $(BUILD)/near_clip.dgb
@@ -125,6 +132,8 @@ demo: $(BUILD)/deadgl $(BUILD)/deadpad $(BUILD)/deadview
 	$(BUILD)/deadview $(BUILD)/tiledemo.ppm > $(BUILD)/tiledemo.view
 	$(BUILD)/deadpad new $(BUILD)/deadpad_seed.dgl
 	$(BUILD)/deadgl shell $(BUILD)/deadpad_seed.dgl -o $(BUILD)/shell_file.ppm
+	$(BUILD)/deadgl scenepack examples/command_machine.dgl -o $(BUILD)/command_machine.dgp
+	$(BUILD)/deadgl sceneunpack $(BUILD)/command_machine.dgp -o $(BUILD)/command_machine.unpack.dgl
 	$(BUILD)/deadgl run $(BUILD)/deadpad_seed.dgl -o $(BUILD)/deadpad_seed.ppm
 	$(BUILD)/deadgl run examples/near_clip.dgl -o $(BUILD)/near_clip.ppm
 
