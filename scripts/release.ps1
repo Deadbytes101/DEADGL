@@ -1,5 +1,5 @@
 $ErrorActionPreference = 'Stop'
-$version = '1.6.0'
+$version = '1.7.0'
 $tag = "v$version"
 $dist = "dist\deadgl-$version"
 $archive = "dist\deadgl-$version-source.zip"
@@ -27,7 +27,7 @@ $versionLine = .\build\deadgl.exe --version
 Copy-Item .\build\deadgl.exe "$dist\deadgl-windows.exe"
 Copy-Item .\build\benchmark.txt "$dist\benchmark.txt"
 Copy-Item README.md, MANIFESTO.md, LICENSE, PROOF.md $dist
-Copy-Item docs\RELEASE_V1.6.0.md "$dist\RELEASE_NOTES.md"
+Copy-Item docs\RELEASE_V1.7.0.md "$dist\RELEASE_NOTES.md"
 $sourceItems = @('include','src','tests','examples','docs','scripts','README.md','MANIFESTO.md','Makefile','CMakeLists.txt','LICENSE','PROOF.md') | Where-Object { Test-Path $_ }
 Compress-Archive -Path $sourceItems -DestinationPath $archive -Force
 $shaFile = "$dist\SHA256SUMS.txt"
@@ -38,4 +38,4 @@ $archiveHash = Get-FileHash $archive -Algorithm SHA256
 Write-Host "DEADGL local release cut complete."
 Write-Host "dist folder : $dist"
 Write-Host "source zip  : $archive"
-Write-Host "gh release create $tag $dist/* $archive --title 'DEADGL $tag' --notes-file docs/RELEASE_V1.6.0.md"
+Write-Host "gh release create $tag $dist/* $archive --title 'DEADGL $tag' --notes-file docs/RELEASE_V1.7.0.md"
