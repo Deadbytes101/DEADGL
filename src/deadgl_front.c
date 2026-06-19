@@ -109,6 +109,33 @@ static int disasm_dgb(const char *src) {
     return 0;
 }
 
+static int grammar_report(void) {
+    printf("DEADGL_GRAMMAR\n");
+    printf("version %s\n", dgl_version());
+    printf("color #RRGGBB | 0xRRGGBB\n");
+    printf("int signed decimal integer\n");
+    printf("float signed decimal float\n");
+    printf("commands\n");
+    printf("  canvas WIDTH HEIGHT\n");
+    printf("  clear COLOR\n");
+    printf("  camera X Y Z FOV\n");
+    printf("  grid STEP COLOR\n");
+    printf("  pixel X Y COLOR\n");
+    printf("  line X0 Y0 X1 Y1 COLOR\n");
+    printf("  rect X Y W H COLOR\n");
+    printf("  fillrect X Y W H COLOR\n");
+    printf("  circle CX CY R COLOR\n");
+    printf("  fillcircle CX CY R COLOR\n");
+    printf("  tri X0 Y0 X1 Y1 X2 Y2 COLOR\n");
+    printf("  meshtri I0 I1 I2 COLOR\n");
+    printf("  text X Y COLOR WORDS...\n");
+    printf("files\n");
+    printf("  .dgl plain command stream\n");
+    printf("  .dgb bytecode envelope DEADGL_DGB_1\n");
+    printf("  .dgp scene envelope DEADGL_DGP_1\n");
+    return 0;
+}
+
 static int text_demo(const char *out) {
     DGL_Surface s = {0, 0, NULL, NULL};
     int rc = dgl_surface_init(&s, 640, 160);
@@ -190,6 +217,7 @@ static int stdin_shell(const char *out) {
 }
 
 int main(int argc, char **argv) {
+    if (argc == 2 && strcmp(argv[1], "grammar") == 0) { return grammar_report(); }
     if (argc == 3 && (strcmp(argv[1], "inspect") == 0 || strcmp(argv[1], "audit") == 0)) { return dgl_inspect_file(argv[2]); }
     if (argc == 3 && strcmp(argv[1], "disasm") == 0) { return disasm_dgb(argv[2]); }
     if (argc == 4 && strcmp(argv[1], "textdemo") == 0 && strcmp(argv[2], "-o") == 0) { return text_demo(argv[3]); }
