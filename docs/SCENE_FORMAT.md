@@ -15,6 +15,7 @@ tri X0 Y0 X1 Y1 X2 Y2 COLOR
 wiretri X0 Y0 X1 Y1 X2 Y2 COLOR
 ztri X0 Y0 Z0 X1 Y1 Z1 X2 Y2 Z2 COLOR
 camera EX EY EZ TX TY TZ FOV
+near Z
 light X Y Z
 shade flat
 shade off
