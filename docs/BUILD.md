@@ -30,8 +30,8 @@ powershell -ExecutionPolicy Bypass -File .\scripts\release.ps1
 Output lands in:
 
 ```text
-dist/deadgl-1.2.0/
-dist/deadgl-1.2.0-source.zip
+dist/deadgl-1.3.0/
+dist/deadgl-1.3.0-source.zip
 ```
 
 Warnings are errors. That is hygiene.
