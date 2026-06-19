@@ -7,6 +7,8 @@
 int main(void) {
     DGL_Surface s = {0, 0, NULL, NULL};
     uint32_t c = 0;
+    uint64_t before;
+    uint64_t after;
     CHECK(strcmp(dgl_version(), "3.2.0") == 0);
     CHECK(dgl_surface_init(&s, 64, 48) == DGL_OK);
     CHECK(dgl_surface_valid(&s));
@@ -16,6 +18,10 @@ int main(void) {
     dgl_clear(&s, DGL_RGB(1, 2, 3));
     CHECK(dgl_get_pixel(&s, 0, 0) == DGL_RGB(1, 2, 3));
     dgl_line(&s, 0, 0, 63, 47, DGL_RGB(7, 7, 7));
+    before = dgl_hash(&s);
+    dgl_text(&s, 2, 2, DGL_RGB(255, 255, 255), "DGL");
+    after = dgl_hash(&s);
+    CHECK(after != before);
     CHECK(dgl_save_ppm(&s, "deadgl_test.ppm") == DGL_OK);
     remove("deadgl_test.ppm");
     dgl_surface_free(&s);
