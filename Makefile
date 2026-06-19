@@ -63,6 +63,7 @@ $(BUILD)/test_deadgl: $(BUILD)/deadgl.o $(BUILD)/deadgl_tile.o $(BUILD)/test_dea
 test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/deadview $(BUILD)/test_deadgl
 	$(BUILD)/test_deadgl
 	$(BUILD)/deadgl --version
+	$(BUILD)/deadgl grammar > $(BUILD)/dgl.grammar
 	$(BUILD)/deadpad --version
 	$(BUILD)/deadview --version
 	$(BUILD)/deadpad new $(BUILD)/deadpad_seed.dgl
@@ -94,6 +95,7 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/deadview
 	$(BUILD)/deadgl prove examples/near_clip.dgl -o $(BUILD)/near_clip.ppm -p $(BUILD)/near_clip.proof
 	$(BUILD)/deadgl-inspect examples/near_clip.dgl > $(BUILD)/near_clip.inspect
 	$(BUILD)/deadgl hash examples/near_clip.dgl
+	test -s $(BUILD)/dgl.grammar
 	test -s $(BUILD)/deadpad_seed.dgl
 	test -s $(BUILD)/deadpad_seed.cat
 	test -s $(BUILD)/deadpad_seed.ppm
@@ -130,6 +132,7 @@ demo: $(BUILD)/deadgl $(BUILD)/deadpad $(BUILD)/deadview
 	$(BUILD)/deadgl demo shrine -o $(BUILD)/shrine.ppm
 	$(BUILD)/deadgl demo depth -o $(BUILD)/depth.ppm
 	$(BUILD)/deadgl demo cube -o $(BUILD)/cube.ppm
+	$(BUILD)/deadgl grammar > $(BUILD)/dgl.grammar
 	$(BUILD)/deadgl textdemo -o $(BUILD)/textdemo.ppm
 	$(BUILD)/deadgl tiledemo -o $(BUILD)/tiledemo.ppm
 	$(BUILD)/deadview $(BUILD)/tiledemo.ppm > $(BUILD)/tiledemo.view
