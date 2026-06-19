@@ -46,6 +46,8 @@ Check-Last 'prove command_machine'
 Check-Last 'prove near_clip'
 .\build\deadgl.exe textdemo -o "$dist\textdemo.ppm"
 Check-Last 'textdemo package'
+.\build\deadgl.exe tiledemo -o "$dist\tiledemo.ppm"
+Check-Last 'tiledemo package'
 .\build\deadpad.exe new "$dist\deadpad_seed.dgl"
 Check-Last 'deadpad seed'
 .\build\deadpad.exe append "$dist\deadpad_seed.dgl" line 8 8 120 8 0xff8822
