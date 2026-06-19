@@ -27,6 +27,6 @@ Windows release path:
 powershell -ExecutionPolicy Bypass -File .\scripts\release.ps1
 ```
 
-Output lands in `dist/deadgl-2.0.2`.
+Output lands in `dist/deadgl-2.0.3`.
 
 Warnings are errors. That is hygiene.
