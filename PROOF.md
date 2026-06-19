@@ -8,7 +8,7 @@ command -> memory -> image -> hash
 
 ## Current proof line
 
-v10.0.0 shipped the command machine suite with checked release artifacts.
+v11.0.0 shipped the language hardening cut with `dgl.grammar` as a release artifact.
 
 ```text
 GOLDEN cube 95689452fd3b5017
@@ -31,14 +31,14 @@ ctest --test-dir build-cmake --output-on-failure
 Windows release validation:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 10.0.1 -Publish
+powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 11.0.1 -Publish
 ```
 
 ## Proof file shape
 
 ```text
 DEADGL_PROOF
-version 10.0.0
+version 11.0.0
 scene examples/command_machine.dgl
 output command_machine.ppm
 width 640
@@ -50,6 +50,7 @@ hash 7dd8eb60b1510af7
 ## Suite proof artifacts
 
 ```text
+dgl.grammar
 command_machine.proof
 command_machine.hash
 command_machine.suite
