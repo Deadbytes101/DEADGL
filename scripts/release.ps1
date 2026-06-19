@@ -29,6 +29,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\golden.ps1
 if ($LASTEXITCODE -ne 0) { throw 'golden proof failed' }
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\parser_probe.ps1
 if ($LASTEXITCODE -ne 0) { throw 'parser probe failed' }
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\dgb_parity.ps1
+if ($LASTEXITCODE -ne 0) { throw 'dgb parity failed' }
 make clean sanitize
 make clean
 make
