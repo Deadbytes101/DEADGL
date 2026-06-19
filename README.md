@@ -29,10 +29,10 @@ make
 ./build/deadgl hash examples/command_machine.dgl
 ```
 
-Windows release:
+Windows local release:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts\release.ps1
+powershell -ExecutionPolicy Bypass -File scripts\cut.ps1 -Version 2.0.4 -Publish
 ```
 
 ## Machine
@@ -48,6 +48,7 @@ powershell -ExecutionPolicy Bypass -File scripts\release.ps1
 - PPM output
 - deterministic hash
 - plain proof file
+- local one-command release cutter
 
 ## Refuses
 
@@ -57,11 +58,27 @@ powershell -ExecutionPolicy Bypass -File scripts\release.ps1
 - no scene graph
 - no hidden render state
 
+## Road to v10
+
+See `docs/V10_ROADMAP.md`.
+
+```text
+v2.1  source split without hash movement
+v3    bytecode command stream
+v4    software console overlay
+v5    tiny editor seed
+v6    live shell
+v7    tile renderer
+v8    native viewer
+v9    scene pack
+v10   command machine suite
+```
+
 ## Proof
 
 ```text
 DEADGL_PROOF
-version 1.2.0
+version 2.0.3
 scene examples/command_machine.dgl
 output command_machine.ppm
 width 640
