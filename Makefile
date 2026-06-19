@@ -10,7 +10,7 @@ SAN_LDFLAGS := -fsanitize=address,undefined
 
 .PHONY: all clean test sanitize demo debug bench release-local
 
-all: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/libdeadgl.a
+all: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/deadview $(BUILD)/libdeadgl.a
 
 $(BUILD):
 	mkdir -p $(BUILD)
@@ -36,6 +36,9 @@ $(BUILD)/deadgl_inspect.o: src/deadgl_inspect.c include/deadgl.h | $(BUILD)
 $(BUILD)/deadpad.o: src/deadpad.c include/deadgl.h | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
+$(BUILD)/deadview.o: src/deadview.c include/deadgl.h | $(BUILD)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
 $(BUILD)/test_deadgl.o: tests/test_deadgl.c include/deadgl.h | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
@@ -51,13 +54,17 @@ $(BUILD)/deadgl-inspect: $(BUILD)/deadgl.o $(BUILD)/deadgl_inspect.o $(BUILD)/de
 $(BUILD)/deadpad: $(BUILD)/deadgl.o $(BUILD)/deadpad.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
+$(BUILD)/deadview: $(BUILD)/deadgl.o $(BUILD)/deadview.o
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+
 $(BUILD)/test_deadgl: $(BUILD)/deadgl.o $(BUILD)/deadgl_tile.o $(BUILD)/test_deadgl.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/test_deadgl
+test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/deadview $(BUILD)/test_deadgl
 	$(BUILD)/test_deadgl
 	$(BUILD)/deadgl --version
 	$(BUILD)/deadpad --version
+	$(BUILD)/deadview --version
 	$(BUILD)/deadpad new $(BUILD)/deadpad_seed.dgl
 	$(BUILD)/deadpad append $(BUILD)/deadpad_seed.dgl line 8 8 120 8 0xff8822
 	$(BUILD)/deadpad cat $(BUILD)/deadpad_seed.dgl > $(BUILD)/deadpad_seed.cat
@@ -66,6 +73,7 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/test_dea
 	$(BUILD)/deadgl shell $(BUILD)/deadpad_seed.dgl -o $(BUILD)/shell_file.ppm
 	$(BUILD)/deadgl textdemo -o $(BUILD)/textdemo.ppm
 	$(BUILD)/deadgl tiledemo -o $(BUILD)/tiledemo.ppm
+	$(BUILD)/deadview $(BUILD)/tiledemo.ppm > $(BUILD)/tiledemo.view
 	$(BUILD)/deadgl inspect examples/near_clip.dgl > $(BUILD)/near_clip.main.inspect
 	$(BUILD)/deadgl audit examples/command_machine.dgl > $(BUILD)/command_machine.audit
 	$(BUILD)/deadgl pack examples/near_clip.dgl -o $(BUILD)/near_clip.dgb
@@ -88,6 +96,7 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/test_dea
 	test -s $(BUILD)/shell_file.ppm
 	test -s $(BUILD)/textdemo.ppm
 	test -s $(BUILD)/tiledemo.ppm
+	test -s $(BUILD)/tiledemo.view
 	test -s $(BUILD)/near_clip.main.inspect
 	test -s $(BUILD)/command_machine.audit
 	test -s $(BUILD)/near_clip.dgb
@@ -107,12 +116,13 @@ sanitize:
 	fi
 	$(MAKE) clean
 
-demo: $(BUILD)/deadgl $(BUILD)/deadpad
+demo: $(BUILD)/deadgl $(BUILD)/deadpad $(BUILD)/deadview
 	$(BUILD)/deadgl demo shrine -o $(BUILD)/shrine.ppm
 	$(BUILD)/deadgl demo depth -o $(BUILD)/depth.ppm
 	$(BUILD)/deadgl demo cube -o $(BUILD)/cube.ppm
 	$(BUILD)/deadgl textdemo -o $(BUILD)/textdemo.ppm
 	$(BUILD)/deadgl tiledemo -o $(BUILD)/tiledemo.ppm
+	$(BUILD)/deadview $(BUILD)/tiledemo.ppm > $(BUILD)/tiledemo.view
 	$(BUILD)/deadpad new $(BUILD)/deadpad_seed.dgl
 	$(BUILD)/deadgl shell $(BUILD)/deadpad_seed.dgl -o $(BUILD)/shell_file.ppm
 	$(BUILD)/deadgl run $(BUILD)/deadpad_seed.dgl -o $(BUILD)/deadpad_seed.ppm
