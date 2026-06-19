@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.4.0
+
+Indexed mesh command cut.
+
+- added `vertex`
+- added `meshtri`
+- added `meshwiretri`
+- added `meshquad`
+- added `meshwirequad`
+- cube scene now uses indexed vertices
+- command machine scene now uses indexed vertices
+
 ## v1.3.0
 
 Hidden-line geometry cut.
