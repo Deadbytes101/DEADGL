@@ -39,6 +39,7 @@ $versionLine = .\build\deadgl.exe --version
 if ($versionLine -ne "DEADGL $version") { throw "version mismatch: binary says '$versionLine', release is '$tag'" }
 .\build\deadgl.exe prove $scene -o "$dist\command_machine.ppm" -p "$dist\command_machine.proof"
 .\build\deadgl.exe prove $clipScene -o "$dist\near_clip.ppm" -p "$dist\near_clip.proof"
+.\build\deadgl.exe textdemo -o "$dist\textdemo.ppm"
 .\build\deadgl.exe inspect $clipScene > "$dist\near_clip.main.inspect"
 .\build\deadgl-inspect.exe $clipScene > "$dist\near_clip.inspect"
 .\build\deadgl.exe audit $scene > "$dist\command_machine.audit"
