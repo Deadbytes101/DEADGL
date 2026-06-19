@@ -23,8 +23,12 @@ jobs:
           update: true
           install: make mingw-w64-ucrt-x86_64-gcc
       - name: cut release
-        shell: msys2 {0}
-        run: powershell -ExecutionPolicy Bypass -File ./scripts/release.ps1
+        env:
+          DEADGL_RELEASE_VERSION: ${{ github.ref_name }}
+        run: |
+          $env:DEADGL_RELEASE_VERSION = $env:DEADGL_RELEASE_VERSION -replace '^v', ''
+          $env:PATH = "C:\msys64\ucrt64\bin;C:\msys64\usr\bin;$env:PATH"
+          powershell -ExecutionPolicy Bypass -File .\scripts\release.ps1
       - name: publish release
         uses: softprops/action-gh-release@v2
         with:
