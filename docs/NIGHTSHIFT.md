@@ -6,32 +6,25 @@ A cut is only real when it builds, tests, renders, hashes, and ships.
 
 ## Current stable
 
-v10.0.0
+v11.0.0
 
 ## Next real cut
 
-v10.0.1 suite hardening
+v11.0.1 language docs sync
 
 ## Release command
 
-powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 10.0.1 -Publish
+powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 11.0.1 -Publish
 
-## Hardening target
+## Target
 
-- README reflects the v10 command machine suite.
-- PROOF reflects current golden hashes and suite artifacts.
-- Release notes explain this is documentation/proof hardening, not a feature bump.
-
-## Suite baseline
-
-- deadgl: render, prove, hash, inspect, audit, shell, pack, scenepack, suite
-- deadgl-inspect: standalone inspection
-- deadpad: tiny scene editor
-- deadview: native framebuffer viewer
+- README mentions the grammar command and `dgl.grammar` artifact.
+- PROOF mentions the v11 grammar artifact.
+- Release notes explain this is docs sync after v11.0.0.
 
 ## Queue
 
-v10.0.1 suite hardening
+v11.0.1 language docs sync
 
 ## Working law
 
