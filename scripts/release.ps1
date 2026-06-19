@@ -40,6 +40,8 @@ make
 Check-Last 'make'
 $versionLine = .\build\deadgl.exe --version
 if ($versionLine -ne "DEADGL $version") { throw "version mismatch: binary says '$versionLine', release is '$tag'" }
+.\build\deadgl.exe grammar > "$dist\dgl.grammar"
+Check-Last 'grammar package'
 .\build\deadgl.exe prove $scene -o "$dist\command_machine.ppm" -p "$dist\command_machine.proof"
 Check-Last 'prove command_machine'
 .\build\deadgl.exe prove $clipScene -o "$dist\near_clip.ppm" -p "$dist\near_clip.proof"
