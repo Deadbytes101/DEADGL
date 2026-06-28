@@ -8,9 +8,28 @@ OUTPUT: pixels + proof hash
 GPU:    none
 ```
 
-DEADGL is a C99 command-machine renderer. It reads plain text `.dgl` commands, writes an ARGB framebuffer in CPU memory, saves PPM images, and emits proof hashes.
+DEADGL is a C99 command-machine renderer. It parses plain text `.dgl`, mutates an ARGB framebuffer in CPU memory, writes PPM images, and emits deterministic proof hashes.
 
 OpenGL and Vulkan talk to GPUs. DEADGL talks to memory.
+
+## Architecture pipeline
+
+```mermaid
+flowchart LR
+    A[.dgl command stream] --> B[Strict parser]
+    B --> C[Command machine]
+    C --> D[Camera + projection]
+    C --> E[2D raster ops]
+    D --> F[3D face raster ops]
+    E --> G[ARGB framebuffer]
+    F --> G
+    G --> H[PPM image]
+    G --> I[Proof hash]
+    B --> J[Grammar report]
+    C --> K[Inspect / audit]
+```
+
+A command changes memory. The final image is bytes. The proof is the hash.
 
 ## Build
 
@@ -19,7 +38,7 @@ make clean test
 make
 ```
 
-## Core commands
+## Use
 
 ```sh
 ./build/deadgl --version
@@ -43,23 +62,33 @@ deadview        native PPM viewer seed
 
 ## DGL language
 
-See `docs/DGL_LANGUAGE.md` or run:
+Read `docs/DGL_LANGUAGE.md` or run:
 
 ```sh
 ./build/deadgl grammar
 ```
 
-The release package includes `dgl.grammar` beside the proof artifacts.
+## Machine surface
 
-## Suite run
+- C99, no dependency
+- ARGB framebuffer + depth buffer
+- lines, rectangles, circles, triangles
+- projected 3D faces
+- explicit camera command
+- strict `.dgl` parser + grammar report
+- DGB bytecode envelope
+- DGP scene-pack envelope
+- shell command stream
+- deterministic hash + plain proof file
+- local one-command release cutter
 
-```sh
-./build/deadpad new scene.dgl
-./build/deadpad append scene.dgl line 8 8 120 8 0xff8822
-./build/deadgl run scene.dgl -o scene.ppm
-./build/deadview scene.ppm
-./build/deadgl suite examples/command_machine.dgl -o command_machine.suite
-```
+## Refuses
+
+- no GPU wrapper
+- no engine layer
+- no scene graph
+- no hidden render state
+- no OBJ-first path
 
 ## Release
 
@@ -67,47 +96,4 @@ The release package includes `dgl.grammar` beside the proof artifacts.
 powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 11.0.1 -Publish
 ```
 
-The release cutter must build, test, render, hash, package proof artifacts, tag, and publish. If any checked step fails, the cut is not real.
-
-## Machine
-
-- C99
-- no dependency
-- ARGB framebuffer
-- depth buffer
-- lines, rectangles, circles, triangles
-- projected 3D faces
-- explicit camera command
-- strict `.dgl` parser
-- grammar report
-- DGB bytecode envelope
-- DGP scene-pack envelope
-- shell command stream
-- tile traversal seed
-- terminal PPM viewer seed
-- deterministic hash
-- plain proof file
-- local one-command release cutter
-
-## Refuses
-
-- no OBJ-first path
-- no GPU wrapper
-- no engine layer
-- no scene graph
-- no hidden render state
-
-## Proof shape
-
-```text
-DEADGL_PROOF
-version 11.0.0
-scene examples/command_machine.dgl
-output command_machine.ppm
-width 640
-height 360
-pixels 230400
-hash 7dd8eb60b1510af7
-```
-
-Keep the pipe visible. A command changes memory. The final image is bytes. The proof is the hash.
+A release is real only if the cutter builds, tests, renders, hashes, packages proof artifacts, tags, and publishes without a failed checked step.
