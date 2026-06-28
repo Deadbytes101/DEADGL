@@ -12,17 +12,18 @@ SKIP sanitize: sanitizer runtime unavailable
 
 Then it cleans the build directory so normal release builds are not poisoned by sanitizer object files.
 
-Recommended Windows release path:
+Recommended Windows path is an sh-capable toolchain:
 
-```powershell
+```sh
 git pull
-powershell -ExecutionPolicy Bypass -File scripts\release.ps1
+make clean test
+sh scripts/release.sh
 ```
 
 Expected output:
 
 ```text
 DEADGL local release cut complete.
-dist folder : dist\deadgl-1.1.0
-source zip  : dist\deadgl-1.1.0-source.zip
+dist folder : dist/deadgl-11.0.0
+source tar  : dist/deadgl-11.0.0-source.tar.gz
 ```
