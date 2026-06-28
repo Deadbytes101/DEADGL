@@ -95,6 +95,7 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/deadview
 	$(BUILD)/deadgl run examples/raster_truth.dgl -o $(BUILD)/raster_truth.ppm
 	$(BUILD)/deadgl prove examples/raster_truth.dgl -o $(BUILD)/raster_truth.proof.ppm -p $(BUILD)/raster_truth.proof
 	$(BUILD)/deadgl hash examples/raster_truth.dgl > $(BUILD)/raster_truth.hash
+	cmp examples/raster_truth.hash $(BUILD)/raster_truth.hash
 	$(BUILD)/deadgl inspect examples/raster_truth.dgl > $(BUILD)/raster_truth.inspect
 	$(BUILD)/deadgl prove examples/near_clip.dgl -o $(BUILD)/near_clip.ppm -p $(BUILD)/near_clip.proof
 	$(BUILD)/deadgl-inspect examples/near_clip.dgl > $(BUILD)/near_clip.inspect
