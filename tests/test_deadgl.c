@@ -15,7 +15,7 @@ int main(void) {
     DGL_Vertex na;
     DGL_Vertex nb;
     DGL_Vertex nc;
-    CHECK(strcmp(dgl_version(), "11.0.0") == 0);
+    CHECK(strcmp(dgl_version(), "11.0.1") == 0);
     CHECK(dgl_surface_init(&s, 64, 48) == DGL_OK);
     CHECK(dgl_surface_valid(&s));
     CHECK(dgl_surface_pixel_count(&s) == 64u * 48u);
