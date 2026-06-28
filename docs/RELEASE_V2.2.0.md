@@ -4,7 +4,7 @@ Golden proof test cut.
 
 ## Added
 
-- `scripts/golden.ps1`
+- golden hash checks
 - fixed golden hash checks for:
   - cube demo
   - command_machine scene
@@ -12,7 +12,7 @@ Golden proof test cut.
 
 ## Changed
 
-- Windows release path now runs golden proof checks before packaging.
+- Release path now runs golden proof checks before packaging.
 - Release fails if a core image hash moves unexpectedly.
 
 ## Golden hashes
@@ -25,7 +25,7 @@ near_clip       33dd8e01461d1f5c
 
 ## Run
 
-```powershell
+```sh
 make clean test
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\golden.ps1
+sh scripts/golden.sh
 ```
