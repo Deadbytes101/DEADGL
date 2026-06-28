@@ -11,9 +11,6 @@ permissions:
 jobs:
   build-release:
     runs-on: windows-latest
-    defaults:
-      run:
-        shell: pwsh
     steps:
       - uses: actions/checkout@v4
       - name: install msys2
@@ -23,16 +20,15 @@ jobs:
           update: true
           install: make mingw-w64-ucrt-x86_64-gcc
       - name: cut release
+        shell: msys2 {0}
         env:
           DEADGL_RELEASE_VERSION: ${{ github.ref_name }}
         run: |
-          $env:DEADGL_RELEASE_VERSION = $env:DEADGL_RELEASE_VERSION -replace '^v', ''
-          $env:PATH = "C:\msys64\ucrt64\bin;C:\msys64\usr\bin;$env:PATH"
-          powershell -ExecutionPolicy Bypass -File .\scripts\release.ps1
+          DEADGL_RELEASE_VERSION=${DEADGL_RELEASE_VERSION#v} sh scripts/release.sh
       - name: publish release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/deadgl-*/*
-            dist/deadgl-*-source.zip
+            dist/deadgl-*-source.tar.gz
           fail_on_unmatched_files: true
