@@ -14,6 +14,10 @@ make clean test
 make clean sanitize
 make
 
+sh scripts/verify_render_truth.sh
+sh scripts/golden.sh
+sh scripts/dgb_parity.sh
+
 ./build/deadgl prove examples/command_machine.dgl -o "$dist/command_machine.ppm" -p "$dist/command_machine.proof"
 ./build/deadgl prove examples/near_clip.dgl -o "$dist/near_clip.ppm" -p "$dist/near_clip.proof"
 ./build/deadgl inspect examples/near_clip.dgl > "$dist/near_clip.main.inspect"
