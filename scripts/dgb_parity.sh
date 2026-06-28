@@ -24,7 +24,7 @@ check_dgb_parity() {
     echo "DGB PARITY $name $a"
 }
 
-if [ ! -x ./build/deadgl ]; then
+if [ ! -f ./build/deadgl ]; then
     echo "missing build/deadgl; run make first" >&2
     exit 1
 fi
