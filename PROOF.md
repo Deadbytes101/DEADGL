@@ -26,12 +26,10 @@ make clean sanitize
 cmake -S . -B build-cmake
 cmake --build build-cmake
 ctest --test-dir build-cmake --output-on-failure
-```
-
-Windows release validation:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 11.0.1 -Publish
+sh scripts/verify_render_truth.sh
+sh scripts/golden.sh
+sh scripts/dgb_parity.sh
+sh scripts/release.sh
 ```
 
 ## Proof file shape
