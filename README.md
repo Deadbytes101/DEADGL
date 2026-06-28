@@ -92,8 +92,8 @@ Read `docs/DGL_LANGUAGE.md` or run:
 
 ## Release
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 11.0.1 -Publish
+```sh
+sh scripts/release.sh
 ```
 
-A release is real only if the cutter builds, tests, renders, hashes, packages proof artifacts, tags, and publishes without a failed checked step.
+A release is real only if the cutter builds, tests, renders, hashes, packages proof artifacts, and exits cleanly.
