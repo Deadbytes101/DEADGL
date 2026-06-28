@@ -24,6 +24,6 @@ No release without proof.
 
 ## Run
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 10.0.1 -Publish
+```sh
+sh scripts/release.sh
 ```
