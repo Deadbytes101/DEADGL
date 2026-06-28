@@ -14,6 +14,6 @@ This is a documentation and proof-language sync after v11.0.0. The language hard
 
 ## Run
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 11.0.1 -Publish
+```sh
+sh scripts/release.sh
 ```
