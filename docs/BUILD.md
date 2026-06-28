@@ -21,10 +21,10 @@ cmake --build build-cmake
 ctest --test-dir build-cmake --output-on-failure
 ```
 
-Windows release path:
+Local release path:
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\release.ps1
+```sh
+sh scripts/release.sh
 ```
 
 Output lands in `dist/deadgl-11.0.0`.
