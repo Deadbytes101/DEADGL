@@ -4,7 +4,6 @@ Parser diagnostics probe cut.
 
 ## Added
 
-- `scripts/parser_probe.ps1`
 - failing scene probes for:
   - unknown command
   - bad arity
@@ -15,13 +14,11 @@ Parser diagnostics probe cut.
 
 ## Changed
 
-- Windows release path now runs parser diagnostics before packaging.
+- Release path now runs parser diagnostics before packaging.
 - Release fails if expected parser error text disappears.
 
 ## Run
 
-```powershell
+```sh
 make clean test
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\golden.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\parser_probe.ps1
 ```
