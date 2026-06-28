@@ -11,11 +11,11 @@ command -> memory -> image -> hash
 v11.0.0 shipped the language hardening cut with `dgl.grammar` as a release artifact.
 
 ```text
-GOLDEN cube 95689452fd3b5017
-GOLDEN command_machine 7dd8eb60b1510af7
-GOLDEN near_clip 33dd8e01461d1f5c
-DGB PARITY near_clip 33dd8e01461d1f5c
-DGB PARITY command_machine 7dd8eb60b1510af7
+GOLDEN cube d710810073eeec70
+GOLDEN command_machine ddcf9658d3e00f08
+GOLDEN near_clip c84cf0589c219386
+DGB PARITY near_clip c84cf0589c219386
+DGB PARITY command_machine ddcf9658d3e00f08
 ```
 
 ## Validation
@@ -42,7 +42,7 @@ output command_machine.ppm
 width 640
 height 360
 pixels 230400
-hash 7dd8eb60b1510af7
+hash ddcf9658d3e00f08
 ```
 
 ## Suite proof artifacts
