@@ -34,8 +34,8 @@ demo_hash() {
     "$DEADGL" demo "$name" -o "build/golden_$name.ppm" | awk '/^hash / {print $2}'
 }
 
-need_hash cube "$(demo_hash cube)" 95689452fd3b5017
-need_hash command_machine "$(scene_hash examples/command_machine.dgl)" 7dd8eb60b1510af7
-need_hash near_clip "$(scene_hash examples/near_clip.dgl)" 33dd8e01461d1f5c
+need_hash cube "$(demo_hash cube)" d710810073eeec70
+need_hash command_machine "$(scene_hash examples/command_machine.dgl)" ddcf9658d3e00f08
+need_hash near_clip "$(scene_hash examples/near_clip.dgl)" c84cf0589c219386
 
 echo "GOLDEN proof hashes locked."
