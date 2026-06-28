@@ -21,5 +21,6 @@ test -s build/raster_truth.verify.inspect
 
 grep -q '^DEADGL_PROOF$' build/raster_truth.verify.proof
 grep -q '^hash ' build/raster_truth.verify.proof
+cmp examples/raster_truth.hash build/raster_truth.verify.hash
 
 echo render truth ok
