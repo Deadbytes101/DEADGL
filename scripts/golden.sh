@@ -22,7 +22,7 @@ demo_hash() {
     ./build/deadgl demo "$name" -o "build/golden_$name.ppm" | awk '/^hash / {print $2}'
 }
 
-if [ ! -x ./build/deadgl ]; then
+if [ ! -f ./build/deadgl ]; then
     echo "missing build/deadgl; run make first" >&2
     exit 1
 fi
