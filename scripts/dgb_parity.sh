@@ -1,9 +1,21 @@
 #!/bin/sh
 set -eu
 
+DEADGL=${DEADGL:-}
+if [ -z "$DEADGL" ]; then
+    if [ -f ./build/deadgl ]; then
+        DEADGL=./build/deadgl
+    elif [ -f ./build/deadgl.exe ]; then
+        DEADGL=./build/deadgl.exe
+    else
+        echo "missing build/deadgl; run make first" >&2
+        exit 1
+    fi
+fi
+
 hash_scene() {
     scene=$1
-    ./build/deadgl hash "$scene" | awk '{print $1}'
+    "$DEADGL" hash "$scene" | awk '{print $1}'
 }
 
 check_dgb_parity() {
@@ -12,9 +24,9 @@ check_dgb_parity() {
     mkdir -p build/dgb_parity
     dgb="build/dgb_parity/$name.dgb"
     unpacked="build/dgb_parity/$name.unpack.dgl"
-    ./build/deadgl pack "$scene" -o "$dgb"
-    ./build/deadgl disasm "$dgb" > "build/dgb_parity/$name.disasm"
-    ./build/deadgl unpack "$dgb" -o "$unpacked"
+    "$DEADGL" pack "$scene" -o "$dgb"
+    "$DEADGL" disasm "$dgb" > "build/dgb_parity/$name.disasm"
+    "$DEADGL" unpack "$dgb" -o "$unpacked"
     a=$(hash_scene "$scene")
     b=$(hash_scene "$unpacked")
     if [ "$a" != "$b" ]; then
@@ -23,11 +35,6 @@ check_dgb_parity() {
     fi
     echo "DGB PARITY $name $a"
 }
-
-if [ ! -f ./build/deadgl ]; then
-    echo "missing build/deadgl; run make first" >&2
-    exit 1
-fi
 
 check_dgb_parity near_clip examples/near_clip.dgl
 check_dgb_parity command_machine examples/command_machine.dgl
