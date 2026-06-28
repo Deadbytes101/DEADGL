@@ -4,14 +4,14 @@ DGB proof parity cut.
 
 ## Added
 
-- `scripts/dgb_parity.ps1`
+- DGB parity checks
 - DGB parity checks for:
   - `examples/near_clip.dgl`
   - `examples/command_machine.dgl`
 
 ## Changed
 
-- Windows release path now runs DGB parity after golden proof and parser diagnostics.
+- Release path now runs DGB parity after golden proof and parser diagnostics.
 - Release fails if `.dgl -> .dgb -> unpack -> hash` changes render output.
 
 ## Rule
@@ -22,7 +22,7 @@ DGB envelope must not change framebuffer proof output.
 
 ## Run
 
-```powershell
+```sh
 make clean test
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\dgb_parity.ps1
+sh scripts/dgb_parity.sh
 ```
