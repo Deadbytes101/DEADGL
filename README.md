@@ -90,6 +90,14 @@ Read `docs/DGL_LANGUAGE.md` or run:
 - no hidden render state
 - no OBJ-first path
 
+## Final gate
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\final_gate.ps1
+```
+
+The final gate checks version surface, release notes, full build/test, golden hashes, parser diagnostics, DGB parity, and the raster truth baseline before a cut.
+
 ## Release
 
 ```powershell
