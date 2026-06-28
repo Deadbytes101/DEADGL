@@ -92,6 +92,10 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/deadview
 	$(BUILD)/deadgl demo cube -o $(BUILD)/cube.ppm
 	$(BUILD)/deadgl run examples/shrine.dgl -o $(BUILD)/scene.ppm
 	$(BUILD)/deadgl run examples/command_machine.dgl -o $(BUILD)/command_machine.ppm
+	$(BUILD)/deadgl run examples/raster_truth.dgl -o $(BUILD)/raster_truth.ppm
+	$(BUILD)/deadgl prove examples/raster_truth.dgl -o $(BUILD)/raster_truth.proof.ppm -p $(BUILD)/raster_truth.proof
+	$(BUILD)/deadgl hash examples/raster_truth.dgl > $(BUILD)/raster_truth.hash
+	$(BUILD)/deadgl inspect examples/raster_truth.dgl > $(BUILD)/raster_truth.inspect
 	$(BUILD)/deadgl prove examples/near_clip.dgl -o $(BUILD)/near_clip.ppm -p $(BUILD)/near_clip.proof
 	$(BUILD)/deadgl-inspect examples/near_clip.dgl > $(BUILD)/near_clip.inspect
 	$(BUILD)/deadgl hash examples/near_clip.dgl
@@ -114,6 +118,11 @@ test: $(BUILD)/deadgl $(BUILD)/deadgl-inspect $(BUILD)/deadpad $(BUILD)/deadview
 	test -s $(BUILD)/near_clip.dgb
 	test -s $(BUILD)/near_clip.disasm
 	test -s $(BUILD)/near_clip.unpack.dgl
+	test -s $(BUILD)/raster_truth.ppm
+	test -s $(BUILD)/raster_truth.proof.ppm
+	test -s $(BUILD)/raster_truth.proof
+	test -s $(BUILD)/raster_truth.hash
+	test -s $(BUILD)/raster_truth.inspect
 	test -s $(BUILD)/near_clip.inspect
 	test -s $(BUILD)/near_clip.proof
 
@@ -143,6 +152,7 @@ demo: $(BUILD)/deadgl $(BUILD)/deadpad $(BUILD)/deadview
 	$(BUILD)/deadgl suite examples/command_machine.dgl -o $(BUILD)/command_machine.suite
 	$(BUILD)/deadgl run $(BUILD)/deadpad_seed.dgl -o $(BUILD)/deadpad_seed.ppm
 	$(BUILD)/deadgl run examples/near_clip.dgl -o $(BUILD)/near_clip.ppm
+	$(BUILD)/deadgl run examples/raster_truth.dgl -o $(BUILD)/raster_truth.ppm
 
 debug:
 	sh scripts/debug_probe.sh
