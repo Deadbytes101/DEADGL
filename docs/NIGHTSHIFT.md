@@ -14,7 +14,7 @@ v11.0.1 language docs sync
 
 ## Release command
 
-powershell -ExecutionPolicy Bypass -File .\scripts\cut.ps1 -Version 11.0.1 -Publish
+sh scripts/release.sh
 
 ## Target
 
